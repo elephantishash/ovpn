@@ -1,0 +1,116 @@
+{% load static %}
+{% get_static_prefix as STATIC_PREFIX %}
+<!DOCTYPE html>
+<html data-bs-theme="light">
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Blog</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+  </head>
+</head>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3" crossorigin="anonymous">
+</script>
+
+
+<style type="text/css">
+	@media only screen and (min-width: 768px) {
+		
+	}
+
+	@media only screen and (max-width: 768px) {
+		
+	}
+</style>
+
+
+<body class="container mt-3 mb-3">
+	<ul class="nav nav-pills nav-fill">
+	  <li class="nav-item">
+	    <a class="nav-link" aria-current="page" href="{% url 'base:home' %}">Home</a>
+	  </li>
+	  <li class="nav-item">
+	    <a class="nav-link" href="{% url 'blog:blog' 5 %}">Blog</a>
+	  </li>
+	  <li class="nav-item">
+	    <a class="nav-link dropdown-toggle active" data-bs-toggle="dropdown" href="{% url 'account:profile' %}" role="button" aria-expanded="false">Profile</a>
+	    <ul class="dropdown-menu">
+	      <li><a class="dropdown-item" href="{% url 'account:actions' %}">Actions</a></li>
+	      <li><a class="dropdown-item" href="{% url 'account:contact' %}">Contact Us</a></li>
+	      <li><a class="dropdown-item" href="#">Something else here</a></li>
+	      <li><hr class="dropdown-divider"></li>
+	      <li><a class="dropdown-item text-danger" href="{% url 'logout' %}">Log Out</a></li>
+	    </ul>
+	  </li>
+	</ul>
+	<br>
+
+	<h3>Welcome back {{ user.username }}</h3>
+	<p class="text-muted">your current server ip is {{ profile.server.ir_ip }}</p>
+	<br>
+
+	{% if accounts_left != 0 %}
+		<form action="{% url 'account:create_account' %}" method="post">
+			{% csrf_token %}
+			<div class="input-group mb-3">
+			  <input type="text" class="form-control" placeholder="Account Name" name="account_name" aria-describedby="button-addon2">
+			  <button class="btn btn-outline-success" type="submit" id="button-addon2">Create</button>
+			</div>
+		</form>
+	{% else %}
+		<div class="alert alert-danger" role="alert">
+		  You ran out of accounts! pleas call with mr.elephant
+		</div>
+	{% endif %}
+
+	<div class="m-2">
+		<i class="text-muted fs-6 float-start">accounts count: {{ accounts_count }}</i>
+		<i class="text-muted fs-6 float-end">accounts left: {{ accounts_left }}</i>
+	</div>
+	<br>
+
+	{% if accounts %}
+		<ul class="list-group list-group-numbered">
+			{% for account in accounts %}
+				<li class="list-group-item">
+					<a href="" data-bs-toggle="modal" data-bs-target="#exampleModal{{ account.id }}" class="text-decoration-none ">{{ account }}</a>
+				<span class="float-end text-muted fw-light">{{ account.date_end|timeuntil }}</span>
+				</li>
+			{% endfor %}
+		</ul>
+		{% for account in accounts %}
+			<!--modal-->
+			<div class="modal fade" id="exampleModal{{ account.id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+				<div class="modal-dialog">
+				    <div class="modal-content">
+				    	<div class="modal-header">
+					        <h1 class="modal-title float-center fs-5" id="exampleModalLabel"><h5 class="">{{ account }}</h5></h1>
+					        <button type="button" class="btn-close float-end" data-bs-dismiss="modal" aria-label="Close"></button>
+				    	</div>
+				    	<div class="modal-body">
+					        <div class="">
+							    
+							    <p class=""><i class="text-muted fs-6">password: </i>{{ account.password }}</p>
+							    <p class="text-muted">{{ account.leader.server }} > {{ account.leader.server.ir_ip }}</p>
+							    <p class="float-start">{{ account.date_end|timeuntil }} left</p>
+
+							</div>
+				    	</div>
+				    	<div class="modal-footer">
+				    		<a class="btn btn-outline-success" href="{% url 'account:charge_account' account.id %}">Charge 1 month</a>
+				    		<a class="btn btn-primary" href="{{ account.file.url }}">Download OVPN file</a>
+
+				    	</div>
+				    </div>
+				</div>
+			</div>
+		{% endfor %}
+	{% else %}
+		<br>
+		<div class="alert alert-secondary" role="alert">
+		  You have not created an account yet
+		</div>
+	{% endif %}
+</body>
+<footer class="bd-footer py-10 mt-5">
+	
+</footer>

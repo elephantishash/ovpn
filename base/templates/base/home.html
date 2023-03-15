@@ -1,0 +1,44 @@
+{% load static %}
+{% get_static_prefix as STATIC_PREFIX %}
+<!DOCTYPE html>
+<html data-bs-theme="light">
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Home</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+</script>
+
+
+<style type="text/css">
+	@media only screen and (min-width: 768px) {
+		
+	}
+
+	@media only screen and (max-width: 768px) {
+		
+	}
+</style>
+
+
+<body class="container mt-3 mb-3">
+	<ul class="nav nav-pills nav-fill">
+	  <li class="nav-item">
+	    <a class="nav-link active" aria-current="page" href="{% url 'base:home' %}">Home</a>
+	  </li>
+	  <li class="nav-item">
+	    <a class="nav-link" href="{% url 'blog:blog' 5 %}">Blog</a>
+	  </li>
+	  <li class="nav-item">
+	    <a class="nav-link" href="{% url 'account:profile' %}">Profile</a>
+	  </li>
+	</ul>
+	<br>
+	<div class="text-end">
+		<h4>به مقصد نهایی خوش امدید</h4>
+		<p>این وبسایت برای تسهیل ارتباط رسانی و ساخت اکانت روی پروتوکل شخصی سازی شده این تیم طراحی و توسعه پیدا کرده و اخرین اخبار و اپ ها و فایل و اموزش های موردنیاز رو به دست همه میرسونه امیدوارم که سرویس خوبی رو تجربه کنید :)
+
+		چنانچه که میخواهید اپلیکیشن مخصوص اندروید رو دانلود کنید کافیست که رو لین زیر بزنید</p>
+
+		<a href="{% static 'base/openvpn.apk' %}">OpenVPN app for androind</a>
+	</div>
+</body>

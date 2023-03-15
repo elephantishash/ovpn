@@ -1,0 +1,89 @@
+{% load static %}
+{% get_static_prefix as STATIC_PREFIX %}
+<!DOCTYPE html>
+<html data-bs-theme="light">
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Blog</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+  </head>
+</head>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3" crossorigin="anonymous">
+</script>
+
+
+<style type="text/css">
+	@media only screen and (min-width: 768px) {
+		
+	}
+
+	@media only screen and (max-width: 768px) {
+		
+	}
+</style>
+
+
+<body class="container mt-3 mb-3">
+	<ul class="nav nav-pills nav-fill">
+	  <li class="nav-item">
+	    <a class="nav-link" aria-current="page" href="{% url 'base:home' %}">Home</a>
+	  </li>
+	  <li class="nav-item">
+	    <a class="nav-link" href="{% url 'blog:blog' 5 %}">Blog</a>
+	  </li>
+	  <li class="nav-item">
+	    <a class="nav-link active" href="{% url 'account:profile' %}">Profile</a>
+	  </li>
+	</ul>
+	<br>
+
+	<ul class="list-group list-group-flush">
+		{% for action in actions %}
+			<li class="list-group-item">
+				{{ action.leader }} 
+				{% if action.action == 0 %}
+					<i class="text-success">Create: </i>
+				{% else %}
+					<i class="text-warning-emphasis">Charge: </i>
+				{% endif %}
+
+				<a href="" data-bs-toggle="modal" data-bs-target="#usermodal{{ action.account.id }}" class="text-decoration-none ">{{ action.account.name }}</a>
+
+				<span class="float-end text-muted fw-light">{{ action.account.created_on }}</span>
+
+			</li>
+
+
+		{% endfor %}
+	</ul>
+	{% for action in actions %}
+		<!--modal-->
+			<div class="modal fade" id="usermodal{{ action.account.id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+			    <div class="modal-content">
+			    	<div class="modal-header">
+				        <h1 class="modal-title float-center fs-5" id="exampleModalLabel"><h5 class="">{{ action.account }}</h5></h1>
+				        <button type="button" class="btn-close float-end" data-bs-dismiss="modal" aria-label="Close"></button>
+			    	</div>
+			    	<div class="modal-body">
+				        <div class="">
+						    
+						    <p class=""><i class="text-muted fs-6">password: </i>{{ action.account.password }}</p>
+						    <p class="text-muted">{{ action.account.leader.server }} > {{ action.account.leader.server.ir_ip }}</p>
+						    <i class="text-muted fws-sm">{{ action.account.created_on }}</i><br>
+						    <p class="float-start">{{ action.account.date_end|timeuntil }} left</p>
+
+						</div>
+			    	</div>
+			    	<div class="modal-footer">
+			    		<a class="btn btn-outline-success" href="{% url 'account:charge_account' action.account.id %}">Charge 1 month</a>
+			    		<a class="btn btn-primary" href="{{ action.account.file.url }}">Download OVPN file</a>
+
+			    	</div>
+			    </div>
+			</div>
+		</div>
+	{% endfor %}
+	
+	
+</body>
