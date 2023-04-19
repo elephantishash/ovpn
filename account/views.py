@@ -52,33 +52,40 @@ def login_view(request):
 
 def create_account(request):
 	if request.user.is_authenticated:
-		server_ip = get_object_or_404(Profile, user = request.user).server.ir_ip
 		account_name = request.POST['account_name']
 
-		for i in os.listdir('cli/{}'.format(server_ip)):
-			if i.startswith('cli_'):
-				none_name = i
-				break
+		if account_name != "":
+			if get_object_or_404(Account, name=account_name):
+				messages.add_message(request, messages.INFO, 'This name already taken')
+			else:
+				profile = get_object_or_404(Profile, user = request.user)
+				server_ip = profile.server.ir_ip
+				
 
-		print(none_name, account_name)
+				for i in os.listdir('cli/{}'.format(server_ip)):
+					if i.startswith('cli_'):
+						none_name = i
+						break
 
-		global pas
-		pas = ''
-		with open('cli/{}/pass.txt'.format(server_ip), 'r') as f:
-			lines = f.readlines()
-			for line in lines:
-				print(line)
-				if line.startswith(none_name):
-					pas = line.split(' : ')[1]
+				global pas
+				pas = ''
+				with open('cli/{}/pass.txt'.format(server_ip), 'r') as f:
+					lines = f.readlines()
+					for line in lines:
+						print(line)
+						if line.startswith(none_name):
+							pas = line.split(' : ')[1]
 
-		os.rename('cli/{}/{}'.format(server_ip, none_name), 'cli/{}/{}.ovpn'.format(server_ip, account_name))
-		with open('cli/{}/{}.ovpn'.format(server_ip, account_name), 'rb') as f:
-			ovpn_file = File(f)	
-			account = Account(name=account_name, password = pas, file = ovpn_file, cli_name = none_name.split('.')[0], leader = get_object_or_404(Profile, user = request.user))
-			account.save()
+				os.rename('cli/{}/{}'.format(server_ip, none_name), 'cli/{}/{}.ovpn'.format(server_ip, account_name))
+				with open('cli/{}/{}.ovpn'.format(server_ip, account_name), 'rb') as f:
+					ovpn_file = File(f)	
+					account = Account(name=account_name, password = pas, file = ovpn_file, server = profile.server, cli_name = none_name.split('.')[0], leader = profile)
+					account.save()
 
-		action = Action(leader = get_object_or_404(Profile, user = request.user), action = 0, account = account)
-		action.save()
+				action = Action(leader = get_object_or_404(Profile, user = request.user), action = 0, account = account)
+				action.save()
+		else:
+			messages.add_message(request, messages.INFO, 'Bad Username! donnot creat none name account')
 
 		return redirect('account:profile')
 	else:

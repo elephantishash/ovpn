@@ -29,6 +29,7 @@ class Account(models.Model):
 	created_on = models.DateTimeField(auto_now_add = True)
 	date_end = models.DateTimeField(default = datetime.datetime.now() + datetime.timedelta(days=30))
 	leader = models.ForeignKey(Profile, on_delete=models.CASCADE)
+	server = models.ForeignKey(Server, blank=True, null=True, on_delete=models.CASCADE)
 	comment = models.TextField(blank = True, null = True)
 	
 
@@ -42,7 +43,6 @@ charge = 1
 STATUS = (
     (create,"create"),
     (charge,"charge"),
-
 )
 
 class Action(models.Model):
