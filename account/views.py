@@ -54,42 +54,41 @@ def create_account(request):
 	if request.user.is_authenticated:
 		account_name = request.POST['account_name']
 
-		if account_name != "":
-			if get_object_or_404(Account, name=account_name):
-				messages.add_message(request, messages.INFO, 'This name already taken')
-			else:
-				profile = get_object_or_404(Profile, user = request.user)
-				server_ip = profile.server.ir_ip
-				
+		try:
+			get_object_or_404(Account, name=account_name)
+			messages.add_message(request, messages.INFO, 'This name already taken')
+		except:
+			profile = get_object_or_404(Profile, user = request.user)
+			server_ip = profile.server.ir_ip
+			
 
-				for i in os.listdir('cli/{}'.format(server_ip)):
-					if i.startswith('cli_'):
-						none_name = i
-						break
+			for i in os.listdir('cli/{}'.format(server_ip)):
+				if i.startswith('cli_'):
+					none_name = i
+					break
 
-				global pas
-				pas = ''
-				with open('cli/{}/pass.txt'.format(server_ip), 'r') as f:
-					lines = f.readlines()
-					for line in lines:
-						print(line)
-						if line.startswith(none_name):
-							pas = line.split(' : ')[1]
+			global pas
+			pas = ''
+			with open('cli/{}/pass.txt'.format(server_ip), 'r') as f:
+				lines = f.readlines()
+				for line in lines:
+					print(line)
+					if line.startswith(none_name):
+						pas = line.split(' : ')[1]
 
-				os.rename('cli/{}/{}'.format(server_ip, none_name), 'cli/{}/{}.ovpn'.format(server_ip, account_name))
-				with open('cli/{}/{}.ovpn'.format(server_ip, account_name), 'rb') as f:
-					ovpn_file = File(f)	
-					account = Account(name=account_name, password = pas, file = ovpn_file, server = profile.server, cli_name = none_name.split('.')[0], leader = profile)
-					account.save()
+			os.rename('cli/{}/{}'.format(server_ip, none_name), 'cli/{}/{}.ovpn'.format(server_ip, account_name))
+			with open('cli/{}/{}.ovpn'.format(server_ip, account_name), 'rb') as f:
+				ovpn_file = File(f)	
+				account = Account(name=account_name, password = pas, file = ovpn_file, server = profile.server, cli_name = none_name.split('.')[0], leader = profile)
+				account.save()
 
-				action = Action(leader = get_object_or_404(Profile, user = request.user), action = 0, account = account)
-				action.save()
-		else:
-			messages.add_message(request, messages.INFO, 'Bad Username! donnot creat none name account')
-
-		return redirect('account:profile')
+			action = Action(leader = get_object_or_404(Profile, user = request.user), action = 0, account = account)
+			action.save()
 	else:
-		return redirect('account:profile')
+		messages.add_message(request, messages.INFO, 'Bad Username! donnot creat none name account')
+
+	return redirect('account:profile')
+
 
 def charge_account(request, account_id):
 	if request.user.is_authenticated:
