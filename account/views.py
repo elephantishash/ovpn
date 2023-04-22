@@ -11,6 +11,8 @@ from django.utils import timezone
 import datetime
 import os
 
+current_dir = os.getcwd()
+
 def profile(request):
 	if request.user.is_authenticated:
 
@@ -62,24 +64,24 @@ def create_account(request):
 			server_ip = profile.server.ir_ip
 			
 
-			for i in os.listdir('/opt/ovpn/cli/{}'.format(server_ip)):
+			for i in os.listdir('{}/cli/{}'.format(current_dir, server_ip)):
 				if i.startswith('cli_'):
 					none_name = i
 					break
 
 			global pas
 			pas = ''
-			with open('/opt/ovpn/cli/{}/pass.txt'.format(server_ip), 'r') as f:
+			with open('{}/cli/{}/pass.txt'.format(current_dir, server_ip), 'r') as f:
 				lines = f.readlines()
 				for line in lines:
 					print(line)
 					if line.startswith(none_name):
 						pas = line.split(' : ')[1]
 
-			os.rename('/opt/ovpn/cli/{}/{}'.format(server_ip, none_name), '/opt/ovpn/cli/{}/{}.ovpn'.format(server_ip, account_name))
-			with open('/opt/ovpn/cli/{}/{}.ovpn'.format(server_ip, account_name), 'rb') as f:
+			os.rename('{}/cli/{}/{}'.format(current_dir, server_ip, none_name), '{}/cli/{}/{}.ovpn'.format(current_dir, server_ip, account_name))
+			with open('{}/cli/{}/{}.ovpn'.format(current_dir,server_ip, account_name), 'rb') as f:
 				ovpn_file = File(f)
-				ovpn_file = File(f, name=os.path.basename('/opt/ovpn/cli/{}/{}.ovpn'.format(server_ip, account_name)))
+				ovpn_file = File(f, name=os.path.basename('{}/cli/{}/{}.ovpn'.format(current_dir, server_ip, account_name)))
 				account = Account(name=account_name, password = pas, file = ovpn_file, server = profile.server, cli_name = none_name.split('.')[0], leader = profile)
 				account.save()
 
