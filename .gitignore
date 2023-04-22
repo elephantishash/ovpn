@@ -1,3 +1,10 @@
 db.sqlite3
 media/Accounts_file
 cli
+account/__pycache__
+account/migrations
+base/__pycache__
+base/migrations
+blog/migrations
+blog/__pycache__
+ovpn/__pycache__
