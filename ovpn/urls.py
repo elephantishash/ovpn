@@ -25,6 +25,7 @@ urlpatterns = [
     path('blog/', include('blog.urls')),
     path('account/', include('account.urls')),
     path('admin/', admin.site.urls),
+    path('superadmin/', include('superadmin.urls')),
     path('logout/', auth_views.LogoutView.as_view(template_name='account/login.html'), name='logout'),
 ]
 

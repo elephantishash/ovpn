@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'base.apps.BaseConfig',
     'blog.apps.BlogConfig',
     'account.apps.AccountConfig',
+    'superadmin.apps.SuperadminConfig',
 ]
 
 MIDDLEWARE = [

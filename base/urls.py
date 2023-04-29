@@ -8,3 +8,5 @@ app_name = 'base'
 urlpatterns = [
     path('', views.home, name='home'),
 ]
+
+handler404 = views.error_404_view

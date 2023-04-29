@@ -15,23 +15,28 @@ current_dir = os.getcwd()
 
 def profile(request):
 	if request.user.is_authenticated:
+		if request.user.is_superuser:
+			return redirect('superadmin:home')
 
-		profile = get_object_or_404(Profile, user = request.user)
-		accounts = Account.objects.filter(leader=profile).order_by('-created_on')
-		accounts_count = accounts.count()
-		all_account = profile.count
-		accounts_left = all_account - accounts_count
+		else:
+			profile = get_object_or_404(Profile, user = request.user)
+			accounts = Account.objects.filter(leader=profile).order_by('-created_on')
+			accounts_count = accounts.count()
+			all_account = profile.count
+			accounts_left = all_account - accounts_count
+			profile.active = accounts_count
+			profile.save()
 
-		today = timezone.datetime.today().day
+			today = timezone.datetime.today().day
 
-		context = {'profile': profile,
-			'accounts': accounts,
-			'accounts_count': accounts_count,
-			'accounts_left': accounts_left,
-			'today': today,
-		} 
+			context = {'profile': profile,
+				'accounts': accounts,
+				'accounts_count': accounts_count,
+				'accounts_left': accounts_left,
+				'today': today,
+			} 
 
-		return render(request, 'account/profile.html', context)
+			return render(request, 'account/profile.html', context)
 	else:
 		return redirect('account:login_view')
 
@@ -60,33 +65,36 @@ def create_account(request):
 			get_object_or_404(Account, name=account_name)
 			messages.add_message(request, messages.INFO, 'This name already taken')
 		except:
-			profile = get_object_or_404(Profile, user = request.user)
-			server_ip = profile.server.ir_ip
-			
+			if account_name != "":
+				profile = get_object_or_404(Profile, user = request.user)
+				server_ip = profile.server.ir_ip
+				
 
-			for i in os.listdir('{}/cli/{}'.format(current_dir, server_ip)):
-				if i.startswith('cli_'):
-					none_name = i
-					break
+				for i in os.listdir('{}/cli/{}'.format(current_dir, server_ip)):
+					if i.startswith('cli_'):
+						none_name = i
+						break
 
-			global pas
-			pas = ''
-			with open('{}/cli/{}/pass.txt'.format(current_dir, server_ip), 'r') as f:
-				lines = f.readlines()
-				for line in lines:
-					print(line)
-					if line.startswith(none_name):
-						pas = line.split(' : ')[1]
+				global pas
+				pas = ''
+				with open('{}/cli/{}/pass.txt'.format(current_dir, server_ip), 'r') as f:
+					lines = f.readlines()
+					for line in lines:
+						print(line)
+						if line.startswith(none_name):
+							pas = line.split(' : ')[1]
 
-			os.rename('{}/cli/{}/{}'.format(current_dir, server_ip, none_name), '{}/cli/{}/{}.ovpn'.format(current_dir, server_ip, account_name))
-			with open('{}/cli/{}/{}.ovpn'.format(current_dir,server_ip, account_name), 'rb') as f:
-				ovpn_file = File(f)
-				ovpn_file = File(f, name=os.path.basename('{}/cli/{}/{}.ovpn'.format(current_dir, server_ip, account_name)))
-				account = Account(name=account_name, password = pas, file = ovpn_file, server = profile.server, cli_name = none_name.split('.')[0], leader = profile)
-				account.save()
+				os.rename('{}/cli/{}/{}'.format(current_dir, server_ip, none_name), '{}/cli/{}/{}.ovpn'.format(current_dir, server_ip, account_name))
+				with open('{}/cli/{}/{}.ovpn'.format(current_dir,server_ip, account_name), 'rb') as f:
+					ovpn_file = File(f)
+					ovpn_file = File(f, name=os.path.basename('{}/cli/{}/{}.ovpn'.format(current_dir, server_ip, account_name)))
+					account = Account(name=account_name, password = pas, file = ovpn_file, server = profile.server, cli_name = none_name.split('.')[0], leader = profile)
+					account.save()
 
-			action = Action(leader = get_object_or_404(Profile, user = request.user), action = 0, account = account)
-			action.save()
+				action = Action(leader = get_object_or_404(Profile, user = request.user), action = 0, account = account)
+				action.save()
+			else:
+				messages.add_message(request, messages.INFO, 'Chose somename and donnot leave it blank !')
 	else:
 		messages.add_message(request, messages.INFO, 'Bad Username! donnot creat none name account')
 
