@@ -20,12 +20,10 @@ def profile(request):
 
 		else:
 			profile = get_object_or_404(Profile, user = request.user)
-			accounts = Account.objects.filter(leader=profile).order_by('-created_on')
+			accounts = Account.objects.filter(leader=profile).order_by('-date_end')
 			accounts_count = accounts.count()
 			all_account = profile.count
 			accounts_left = all_account - accounts_count
-			profile.active = accounts_count
-			profile.save()
 
 			today = timezone.datetime.today().day
 
@@ -57,6 +55,31 @@ def check(request):
 def login_view(request):
 	return render(request, 'account/login.html')
 
+def account_generator(profile, server_ip, account_name):
+	for i in os.listdir('{}/cli/{}'.format(current_dir, server_ip)):
+		if i.startswith('cli_'):
+			none_name = i
+			break
+
+	global pas
+	pas = ''
+	with open('{}/cli/{}/pass.txt'.format(current_dir, server_ip), 'r') as f:
+		lines = f.readlines()
+		for line in lines:
+			print(line)
+			if line.startswith(none_name):
+				pas = line.split(' : ')[1]
+
+	os.rename('{}/cli/{}/{}'.format(current_dir, server_ip, none_name), '{}/cli/{}/{}.ovpn'.format(current_dir, server_ip, account_name))
+	with open('{}/cli/{}/{}.ovpn'.format(current_dir,server_ip, account_name), 'rb') as f:
+		ovpn_file = File(f)
+		ovpn_file = File(f, name=os.path.basename('{}/cli/{}/{}.ovpn'.format(current_dir, server_ip, account_name)))
+		account = Account(name=account_name, password = pas, file = ovpn_file, server = profile.server, cli_name = none_name.split('.')[0], leader = profile)
+		account.save()
+
+	action = Action(leader = profile, action = 0, account = account)
+	action.save()
+
 def create_account(request):
 	if request.user.is_authenticated:
 		account_name = request.POST['account_name']
@@ -70,29 +93,7 @@ def create_account(request):
 				server_ip = profile.server.ir_ip
 				
 
-				for i in os.listdir('{}/cli/{}'.format(current_dir, server_ip)):
-					if i.startswith('cli_'):
-						none_name = i
-						break
-
-				global pas
-				pas = ''
-				with open('{}/cli/{}/pass.txt'.format(current_dir, server_ip), 'r') as f:
-					lines = f.readlines()
-					for line in lines:
-						print(line)
-						if line.startswith(none_name):
-							pas = line.split(' : ')[1]
-
-				os.rename('{}/cli/{}/{}'.format(current_dir, server_ip, none_name), '{}/cli/{}/{}.ovpn'.format(current_dir, server_ip, account_name))
-				with open('{}/cli/{}/{}.ovpn'.format(current_dir,server_ip, account_name), 'rb') as f:
-					ovpn_file = File(f)
-					ovpn_file = File(f, name=os.path.basename('{}/cli/{}/{}.ovpn'.format(current_dir, server_ip, account_name)))
-					account = Account(name=account_name, password = pas, file = ovpn_file, server = profile.server, cli_name = none_name.split('.')[0], leader = profile)
-					account.save()
-
-				action = Action(leader = get_object_or_404(Profile, user = request.user), action = 0, account = account)
-				action.save()
+				account_generator(profile, server_ip, account_name)
 			else:
 				messages.add_message(request, messages.INFO, 'Chose somename and donnot leave it blank !')
 	else:

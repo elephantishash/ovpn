@@ -12,20 +12,20 @@
 </script>
 
 <body class="container mt-3 mb-3">
-	<ul class="nav nav-pills nav-fill">
+	<ul class="nav nav-tabs nav-fill">
 	  <li class="nav-item">
-	    <a class="nav-link active" aria-current="page" href="{% url 'superadmin:home' %}">Home</a>
+	    <a class="nav-link" aria-current="page" href="{% url 'superadmin:home' %}">Home</a>
 	  </li>
 	  <li class="nav-item">
-	    <a class="nav-link" href="{% url 'blog:blog' 5 %}">Accounts</a>
+	    <a class="nav-link active" href="{% url 'superadmin:manage' %}">Mange</a>
 	  </li>
 	  <li class="nav-item">
-	    <a class="nav-link" href="{% url 'blog:blog' 5 %}">Blog</a>
+	    <a class="nav-link text-danger" href="{% url 'logout' %}">Log Out</a>
 	  </li>
 	</ul>
 	<br>
 
-	<h3>There is account list of {{ profile.user.username }}</h3>
+	<p>There is account list of  <i class="fs-5 text-success">{{ profile.user.username }}</i></p>
 	<p class="text-muted">your current server ip is {{ profile.server.ir_ip }}</p>
 	<form action="{% url 'superadmin:change_server' profile.id %}" method="post">
 		{% csrf_token %}

@@ -12,23 +12,24 @@
 </script>
 
 <body class="container mt-3 mb-3">
-	<ul class="nav nav-pills nav-fill">
+	<ul class="nav nav-tabs nav-fill">
 	  <li class="nav-item">
-	    <a class="nav-link active" aria-current="page" href="{% url 'superadmin:home' %}">Home</a>
+	    <a class="nav-link" aria-current="page" href="{% url 'superadmin:home' %}">Home</a>
 	  </li>
 	  <li class="nav-item">
-	    <a class="nav-link" href="{% url 'blog:blog' 5 %}">Accounts</a>
+	    <a class="nav-link active" href="{% url 'superadmin:manage' %}">Mange</a>
 	  </li>
 	  <li class="nav-item">
-	    <a class="nav-link" href="{% url 'blog:blog' 5 %}">Blog</a>
+	    <a class="nav-link text-danger" href="{% url 'logout' %}">Log Out</a>
 	  </li>
 	</ul>
 	<br>
 
-	<div><h5>{{ server }}</h5><i class="text-muted text-end">sum: {{ server.account_set.count }}</i></div>
+	<div class="m-1">
+		<i class="text-muted float-end">{{ server.ir_ip }}</i><h5>{{ server }}</h5>
+	</div>
 
-
-	<h6 class="text-muted">Leaders list:</h6>
+	<div class="m-1"><i class="text-muted float-end">sum: {{ server.account_set.count }}</i><h6 class="text-muted">Leaders list:</h6></div>
 	<ul class="list-group list-group">
 		{% for profile in profiles %}
 			<li class="list-group-item"><a class="text-decoration-none" href="{% url 'superadmin:profile' profile.id %}">{{ profile }}</a><span class="float-end text-muted fw-light">{{ profile.account_set.count }}</span></li>

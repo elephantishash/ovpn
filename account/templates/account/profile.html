@@ -46,7 +46,7 @@
 	</ul>
 	<br>
 
-	<h3>Welcome back {{ user.username }}</h3>
+	<h3>Welcome back <i class="text-success">{{ user.username }}</i></h3>
 	<p class="text-muted">your current server ip is {{ profile.server.ir_ip }}</p>
 	{% if messages %}
 		{% for message in messages %}

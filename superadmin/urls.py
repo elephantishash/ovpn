@@ -10,4 +10,6 @@ urlpatterns = [
     path('profile/<int:profile>', views.profile, name='profile'),
     path('change_server/<int:profile_id>', views.change_server, name='change_server'),
     path('server/<int:server_id>', views.server, name='server'),
+    path('manage/', views.manage, name='manage'),
+    path('create_account/', views.create_account, name='create_account'),
 ]
