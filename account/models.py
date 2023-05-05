@@ -17,6 +17,7 @@ class Profile(models.Model):
 	user = models.ForeignKey(User, on_delete=models.CASCADE)
 	count = models.IntegerField(default = 1)
 	server = models.ForeignKey(Server, on_delete=models.CASCADE)
+	chat_id = models.CharField(max_length=100, default='515098162')
 
 	def __str__(self):
 		return self.user.username

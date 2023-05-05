@@ -31,6 +31,11 @@
 	  <li class="list-group-item text-success"><i class="text-secondary text-start">Servers:</i> <t class="float-end">{{ servers.count }}</t></li>
 	</ul>
 	<hr>
+	{% if messages %}
+		{% for message in messages %}
+			<div class="alert alert-danger">{{ message }}</div>
+		{% endfor %}
+	{% endif %}
 
 	<form action="{% url 'superadmin:create_account' %}" method="post">
 		{% csrf_token %}

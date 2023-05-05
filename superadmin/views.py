@@ -9,9 +9,18 @@ from account.models import Profile, Account, Action, Server
 from django.core.files import File
 from django.utils import timezone
 import datetime
+import requests
 import os
 
 current_dir = os.getcwd()
+
+def document_sender(chat_id, file, caption):
+	apiToken = '6292864503:AAHSpBSym2NVJuubNdfmuUFCxf5z-i8Gpnc'
+	apiURL = f'https://api.telegram.org/bot{apiToken}/sendDocument'
+	files = {'document': open(file,'rb')}
+	data = {'chat_id': chat_id, 'parse_mode':'HTML', 'caption':caption}
+	r = requests.post(apiURL, data=data, files=files, stream=True)
+	return r.json()
 
 def account_generator(profile, server, account_name):
 	server_ip = server.ir_ip
@@ -36,6 +45,8 @@ def account_generator(profile, server, account_name):
 		account = Account(name=account_name, password = pas, file = ovpn_file, server = server, cli_name = none_name.split('.')[0], leader = profile)
 		account.save()
 
+	document_sender(profile.chat_id, '{}/cli/{}/{}.ovpn'.format(current_dir, server_ip, account_name), pas)
+
 	action = Action(leader = profile, action = 0, account = account)
 	action.save()
 
@@ -56,6 +67,8 @@ def home(request):
 
 
 			return render(request, 'superadmin/home.html', context=context)
+		else:
+			return redirect('account:profile')
 	else:
 		return redirect('account:login_view')
 
@@ -122,18 +135,47 @@ def server(request, server_id):
 	else:
 		return redirect('account:login_view')
 
+"""def create_account(request):
+	if request.user.is_authenticated:
+		if request.user.is_superuser:
+			account_name = request.POST['account_name']
+			try:
+				get_object_or_404(Account, name=account_name)
+				messages.add_message(request, messages.INFO, 'This name already taken')
+			except:
+				if account_name != "":
+					server = get_object_or_404(Server, name=request.POST['server_shift'])
+					profile = get_object_or_404(Profile, user=request.user)
+
+					account_generator(profile, server, account_name)
+				else:
+					messages.add_message(request, messages.INFO, 'Chose somename and donnot leave it blank !')
+
+			return redirect('superadmin:home')
+
+	else:
+		return redirect('account:login_view')"""
+
 def create_account(request):
 	if request.user.is_authenticated:
 		if request.user.is_superuser:
 			account_name = request.POST['account_name']
-			server = get_object_or_404(Server, name=request.POST['server_shift'])
-			profile = get_object_or_404(Profile, user=request.user)
 
-			account_generator(profile, server, account_name)
-			print('i am here biiiiiitch')
+			try:
+				get_object_or_404(Account, name=account_name)
+				messages.add_message(request, messages.INFO, 'This name already taken')
+			except:
+				if account_name != "":
+					server = get_object_or_404(Server, name=request.POST['server_shift'])
+					profile = get_object_or_404(Profile, user=request.user)
+
+					account_generator(profile, server, account_name)
+				else:
+					messages.add_message(request, messages.INFO, 'Chose somename and donnot leave it blank !')
 
 			return redirect('superadmin:home')
-
+		else:
+			return redirect('account:profile')
 	else:
 		return redirect('account:login_view')
 

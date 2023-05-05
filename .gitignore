@@ -8,3 +8,8 @@ base/migrations
 blog/migrations
 blog/__pycache__
 ovpn/__pycache__
+account/__pycache__
+account/migrations/__pycache__
+media/.DS_Store
+superadmin/__pycache__
+

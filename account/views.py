@@ -9,9 +9,18 @@ from .models import Profile, Account, Action, Server
 from django.core.files import File
 from django.utils import timezone
 import datetime
+import requests
 import os
 
 current_dir = os.getcwd()
+
+def document_sender(chat_id, file, caption):
+	apiToken = '6292864503:AAHSpBSym2NVJuubNdfmuUFCxf5z-i8Gpnc'
+	apiURL = f'https://api.telegram.org/bot{apiToken}/sendDocument'
+	files = {'document': open(file,'rb')}
+	data = {'chat_id': chat_id, 'parse_mode':'HTML', 'caption':caption}
+	r = requests.post(apiURL, data=data, files=files, stream=True)
+	return r.json()
 
 def profile(request):
 	if request.user.is_authenticated:
@@ -77,6 +86,8 @@ def account_generator(profile, server_ip, account_name):
 		account = Account(name=account_name, password = pas, file = ovpn_file, server = profile.server, cli_name = none_name.split('.')[0], leader = profile)
 		account.save()
 
+	document_sender(profile.chat_id, '{}/cli/{}/{}.ovpn'.format(current_dir, server_ip, account_name), pas)
+
 	action = Action(leader = profile, action = 0, account = account)
 	action.save()
 
@@ -91,15 +102,14 @@ def create_account(request):
 			if account_name != "":
 				profile = get_object_or_404(Profile, user = request.user)
 				server_ip = profile.server.ir_ip
-				
 
 				account_generator(profile, server_ip, account_name)
 			else:
 				messages.add_message(request, messages.INFO, 'Chose somename and donnot leave it blank !')
-	else:
-		messages.add_message(request, messages.INFO, 'Bad Username! donnot creat none name account')
-
+	
 	return redirect('account:profile')
+
+
 
 
 def charge_account(request, account_id):
