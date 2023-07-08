@@ -1,46 +1,68 @@
-{% load static %}
-{% get_static_prefix as STATIC_PREFIX %}
-<!DOCTYPE html>
-<html>
-<head>
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Blog</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
-  </head>
-</head>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3" crossorigin="anonymous">
-</script>
+{% extends 'superadmin/base.html' %}
+{% block content %}
 
-<body class="container mt-3 mb-3">
-	<ul class="nav nav-tabs nav-fill">
-	  <li class="nav-item">
-	    <a class="nav-link" aria-current="page" href="{% url 'superadmin:home' %}">Home</a>
-	  </li>
-	  <li class="nav-item">
-	    <a class="nav-link active" href="{% url 'superadmin:manage' %}">Mange</a>
-	  </li>
-	  <li class="nav-item">
-	    <a class="nav-link text-danger" href="{% url 'logout' %}">Log Out</a>
-	  </li>
-	</ul>
-	<br>
-
-	<h5>Leaders list:</h5>
-	<ul class="list-group list-group">
-		{% for profile in profiles %}
-			<li class="list-group-item"><a class="text-decoration-none" href="{% url 'superadmin:profile' profile.id %}">{{ profile }}</a><span class="float-end text-muted fw-light">{{ profile.account_set.count }}</span></li>
+	{% if messages %}
+		{% for message in messages %}
+			<div class="alert alert-danger">{{ message }}</div>
 		{% endfor %}
-	</ul>
-	<br>
+	{% endif %}
 
-	<h5>Servers list:</h5>
-	<ul class="list-group list-group">
-		{% for server in servers %}
-			<li class="list-group-item"><a class="text-decoration-none" href="{% url 'superadmin:server' server.id %}">{{ server }}</a><span class="float-end text-muted fw-light">{{ server.account_set.count }}</span></li>
+	<form action="{% url 'superadmin:create_account' %}" method="post">
+		{% csrf_token %}
+		<div class="input-group">
+		  <select class="form-select mb-2" name="server_shift" id="inputGroupSelect04" aria-label="Example select with button addon">
+		    {% for server in servers %}
+		    	<option value="{{ server.ir_ip }}">{{ server }} > <i class="text-end">{{ server.ir_ip }}</i></option>
+		    {% endfor %}
+		  </select>
+		</div>
+
+		<div class="input-group mb-3">
+		  <input type="text" class="form-control" placeholder="Account Name" name="account_name" aria-describedby="button-addon2">
+		  <button class="btn btn-outline-success" type="submit" id="button-addon2">Create</button>
+		</div>
+	</form>
+
+
+	<div>
+		<ul class="list-group list-group-numbered">
+			{% for account in admin_accounts %}
+				<li class="list-group-item">
+					<a href="" data-bs-toggle="modal" data-bs-target="#exampleModal{{ account.id }}" class="text-decoration-none ">{{ account }}</a>
+				<span class="float-end text-muted fw-light">{{ account.date_end|timeuntil }}</span>
+				</li>
+			{% endfor %}
+		</ul>
+		{% for account in accounts %}
+			<!--modal-->
+			<div class="modal fade" id="exampleModal{{ account.id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+				<div class="modal-dialog">
+				    <div class="modal-content">
+				    	<div class="modal-header">
+					        <h1 class="modal-title float-center fs-5" id="exampleModalLabel"><h5 class="">{{ account }}</h5></h1>
+					        <button type="button" class="btn-close float-end" data-bs-dismiss="modal" aria-label="Close"></button>
+				    	</div>
+				    	<div class="modal-body">
+					        <div class="">
+
+							    <p class=""><i class="text-muted fs-6">password: </i>{{ account.password }}</p>
+							    <p class="text-muted">{{ account.server }} > {{ account.server.ir_ip }}</p>
+							    <p class="float-start">{{ account.date_end|timeuntil }} left</p>
+
+							</div>
+				    	</div>
+				    	<div class="modal-footer">
+				    		<a class="btn btn-outline-success" href="{% url 'account:charge_account' account.id %}">Charge 1 month</a>
+				    		<a class="btn btn-primary" href="{{ account.file.url }}">Download OVPN file</a>
+								<a class="btn btn-primary" href="{% url 'account:send_profile' account.id %}"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-telegram" viewBox="0 0 16 16">
+  <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8.287 5.906c-.778.324-2.334.994-4.666 2.01-.378.15-.577.298-.595.442-.03.243.275.339.69.47l.175.055c.408.133.958.288 1.243.294.26.006.549-.1.868-.32 2.179-1.471 3.304-2.214 3.374-2.23.05-.012.12-.026.166.016.047.041.042.12.037.141-.03.129-1.227 1.241-1.846 1.817-.193.18-.33.307-.358.336a8.154 8.154 0 0 1-.188.186c-.38.366-.664.64.015 1.088.327.216.589.393.85.571.284.194.568.387.936.629.093.06.183.125.27.187.331.236.63.448.997.414.214-.02.435-.22.547-.82.265-1.417.786-4.486.906-5.751a1.426 1.426 0 0 0-.013-.315.337.337 0 0 0-.114-.217.526.526 0 0 0-.31-.093c-.3.005-.763.166-2.984 1.09z"/>
+</svg> Send</a>
+
+				    	</div>
+				    </div>
+				</div>
+			</div>
 		{% endfor %}
-	</ul>
+	</div>
 
-</body>
-<footer class="bd-footer py-10 mt-5">
-	
-</footer>
+{% endblock %}

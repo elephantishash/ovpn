@@ -11,6 +11,8 @@ urlpatterns = [
     path('check/', views.check, name='check'),
     path('create_account/', views.create_account, name='create_account'),
     path('charge_account/<int:account_id>', views.charge_account, name='charge_account'),
+    path('send_profile/<int:account_id>', views.send_profile, name='send_profile'),
     path('actions/', views.actions, name='actions'),
     path('contact/', views.contact, name='contact'),
+    path('change_chat_id/<int:profile_id>', views.change_chat_id, name='change_chat_id'),
 ]

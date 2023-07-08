@@ -1,0 +1,33 @@
+{% extends 'superadmin/base.html' %}
+{% block content %}
+
+  <form action="{% url 'superadmin:create_server' %}" method="post">
+    {% csrf_token %}
+    <div class="">
+      <h3>Server Creation form</h3>
+      <input type="text" name="server_name" aria-label="Username" placeholder="Server Name" class="form-control">
+      <br>
+      <div class="input-group">
+        <input type="text" name="ir_ip" aria-label="Text" placeholder="IR ip" class="form-control">
+        <input type="text" name="fr_ip" aria-label="Text" placeholder="FR ip" class="form-control">
+      </div>
+      <br>
+
+      <select class="form-select" name="next_server_ip" id="inputGroupSelect04">
+        <option selected>Choose a server for shifting option</option>
+        {% for server in servers %}
+          <option value="{{ server.ir_ip }}">{{ server }} > <i class="text-end">{{ server.ir_ip }}</i></option>
+        {% endfor %}
+      </select>
+      <br>
+      <!--<div class="form-floating">
+        <input type="text" name="count" class="form-control" id="inputText2" placeholder="Count">
+        <label for="inputText2">Count</label>
+      </div>-->
+    </div>
+    <div class="row p-2">
+      <button class="submit btn btn-outline-success col m-1" type="submit" value="Login">Create</button>
+    </div>
+  </form>
+
+{% endblock %}

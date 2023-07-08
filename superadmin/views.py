@@ -2,6 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse, HttpResponseRedirect, FileResponse
 from django.urls import reverse
 from django.conf import settings
+from django.contrib.auth.models import User
 from django.core.files.storage import FileSystemStorage
 from django.contrib import messages
 from django.contrib.auth import authenticate, login
@@ -57,6 +58,8 @@ def home(request):
 			servers = Server.objects.all()
 			accounts = Account.objects.all()
 
+			print(request.META['HTTP_REFERER'])
+
 			admin_accounts = Account.objects.filter(leader=get_object_or_404(Profile, user=request.user)).order_by('-date_end')
 
 			context = { 'profiles': profiles,
@@ -72,23 +75,28 @@ def home(request):
 	else:
 		return redirect('account:login_view')
 
-def manage(request):
+def admin_profile(request):
 	if request.user.is_authenticated:
 		if request.user.is_superuser:
 			profiles = Profile.objects.all()
 			servers = Server.objects.all()
+			accounts = Account.objects.all()
+
+			admin_accounts = Account.objects.filter(leader=get_object_or_404(Profile, user=request.user)).order_by('-date_end')
 
 			context = {'profiles': profiles,
 				'servers': servers,
+				'accounts': accounts,
+				'admin_accounts': admin_accounts,
 			}
 			return render(request, 'superadmin/manage.html', context = context)
 	else:
 		return redirect('account:login_view')
 
-def profile(request, profile):
+def profile(request, profile_id):
 	if request.user.is_authenticated:
 		if request.user.is_superuser:
-			profile = get_object_or_404(Profile, id=profile)
+			profile = get_object_or_404(Profile, id=profile_id)
 			accounts = Account.objects.filter(leader=profile).order_by('-date_end')
 			accounts_count = accounts.count()
 			all_account = profile.count
@@ -104,7 +112,7 @@ def profile(request, profile):
 				'accounts_left': accounts_left,
 				'today': today,
 				'servers': servers,
-			} 
+			}
 
 			return render(request, 'superadmin/profile.html', context)
 	else:
@@ -114,7 +122,7 @@ def change_server(request, profile_id):
 	if request.user.is_authenticated:
 		if request.user.is_superuser:
 			profile = get_object_or_404(Profile, id=profile_id)
-			server = get_object_or_404(Server, name=request.POST['server_shift'])
+			server = get_object_or_404(Server, ir_ip=request.POST['server_shift'])
 			profile.server = server
 			profile.save()
 			return redirect('superadmin:profile', profile_id)
@@ -135,26 +143,6 @@ def server(request, server_id):
 	else:
 		return redirect('account:login_view')
 
-"""def create_account(request):
-	if request.user.is_authenticated:
-		if request.user.is_superuser:
-			account_name = request.POST['account_name']
-			try:
-				get_object_or_404(Account, name=account_name)
-				messages.add_message(request, messages.INFO, 'This name already taken')
-			except:
-				if account_name != "":
-					server = get_object_or_404(Server, name=request.POST['server_shift'])
-					profile = get_object_or_404(Profile, user=request.user)
-
-					account_generator(profile, server, account_name)
-				else:
-					messages.add_message(request, messages.INFO, 'Chose somename and donnot leave it blank !')
-
-			return redirect('superadmin:home')
-
-	else:
-		return redirect('account:login_view')"""
 
 def create_account(request):
 	if request.user.is_authenticated:
@@ -166,7 +154,7 @@ def create_account(request):
 				messages.add_message(request, messages.INFO, 'This name already taken')
 			except:
 				if account_name != "":
-					server = get_object_or_404(Server, name=request.POST['server_shift'])
+					server = get_object_or_404(Server, ir_ip=request.POST['server_shift'])
 					profile = get_object_or_404(Profile, user=request.user)
 
 					account_generator(profile, server, account_name)
@@ -179,5 +167,99 @@ def create_account(request):
 	else:
 		return redirect('account:login_view')
 
+def test(request):
+	if request.user.is_authenticated:
+		if request.user.is_superuser:
+			un = request.POST['username']
+			password = request.POST['password']
 
+			cn = request.POST['count']
+			si = request.POST['server_ip']
 
+			print(un, password, cn, si)
+
+			return redirect('superadmin:leader_creation')
+		else:
+			return redirect('account:profile')
+	else:
+		return redirect('account:login_view')
+
+def send_profile(request, account_id):
+	if request.user.is_authenticated:
+		account = get_object_or_404(Account, id=account_id)
+		profile = get_object_or_404(Profile, user=request.user)
+
+		document_sender(profile.chat_id, '{}{}'.format(current_dir, account.file.url), account.password)
+
+		return redirect('account:profile')
+	else:
+		return redirect('account:profile')
+
+def leader_creation(request):
+	if request.user.is_authenticated:
+		if request.user.is_superuser:
+			servers = Server.objects.all()
+			context = {
+				'servers': servers,
+			}
+
+			return render(request, 'superadmin/leader_creation.html', context=context)
+		else:
+			return redirect('account:profile')
+	else:
+		return redirect('account:login_view')
+
+def create_profile(request):
+	if request.user.is_authenticated:
+		if request.user.is_superuser:
+			username = request.POST['username']
+			password = request.POST['password']
+
+			count = request.POST['count']
+			server_ip = request.POST['server_ip']
+
+			user = User.objects.create_user(username=username, password=password)
+			user.save()
+
+			server = get_object_or_404(Server, ir_ip=server_ip)
+			profile = Profile(user=user, count = int(count), server = server)
+			profile.save()
+
+			return redirect('superadmin:home')
+		else:
+			return redirect('account:profile')
+	else:
+		return redirect('account:login_view')
+
+def server_creation(request):
+	if request.user.is_authenticated:
+		if request.user.is_superuser:
+			servers = Server.objects.all()
+			context = {
+				'servers': servers,
+			}
+
+			return render(request, 'superadmin/server_creation.html', context=context)
+		else:
+			return redirect('account:profile')
+	else:
+		return redirect('account:login_view')
+
+def create_server(request):
+	if request.user.is_authenticated:
+		if request.user.is_superuser:
+			server_name = request.POST['server_name']
+			ir_ip = request.POST['ir_ip']
+			fr_ip = request.POST['fr_ip']
+
+			next_server_ip = request.POST['next_server_ip']
+			shift_server = get_object_or_404(Server, ir_ip=next_server_ip)
+
+			server = Server(name=server_name, ir_ip=ir_ip, fr_ip=fr_ip, next_server=shift_server)
+			server.save()
+
+			return redirect('superadmin:home')
+		else:
+			return redirect('account:profile')
+	else:
+		return redirect('account:login_view')

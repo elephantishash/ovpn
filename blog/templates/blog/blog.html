@@ -1,16 +1,6 @@
-{% load static %}
-{% get_static_prefix as STATIC_PREFIX %}
-<!DOCTYPE html>
-<html data-bs-theme="light">
-<head>
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Blog</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
-</head>
+{% extends 'blog/base.html' %}
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3" crossorigin="anonymous">
-</script>
-
+{% block content %}
 <style type="text/css">
 	@media only screen and (min-width: 768px) {
 		.grid-right {
@@ -33,21 +23,6 @@
 		}
 	}
 </style>
-
-
-<body class="container mt-3 mb-3">
-	<ul class="nav nav-pills nav-fill">
-	  <li class="nav-item">
-	    <a class="nav-link" aria-current="page" href="{% url 'base:home' %}">Home</a>
-	  </li>
-	  <li class="nav-item">
-	    <a class="nav-link active" href="{% url 'blog:blog' 5 %}">Blog</a>
-	  </li>
-	  <li class="nav-item">
-	    <a class="nav-link" href="{% url 'account:profile' %}">Profile</a>
-	  </li>
-	</ul><br>
-
 
 
 	<div class="">
@@ -76,14 +51,14 @@
 				{% else %}
 					<a href="{% url 'blog:blog' 2 %}" class="list-group-item " aria-current="true">Server news</a>
 				{% endif %}
-				
+
 				{% if choice == 3 %}
 					<a href="{% url 'blog:blog' 3 %}" class="list-group-item active" aria-current="true">Final Destination</a>
 				{% else %}
 					<a href="{% url 'blog:blog' 3 %}" class="list-group-item " aria-current="true">Final Destination</a>
 				{% endif %}
 			</ul>
-			
+
 		</div>
 
 		<div class="float-start grid-right">
@@ -114,11 +89,11 @@
 						      	<a style="text-decoration-line: none;" href="{{ post.file.url }}">{{ post.file.name }} <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-folder" viewBox="0 0 16 16">
   <path d="M.54 3.87.5 3a2 2 0 0 1 2-2h3.672a2 2 0 0 1 1.414.586l.828.828A2 2 0 0 0 9.828 3h3.982a2 2 0 0 1 1.992 2.181l-.637 7A2 2 0 0 1 13.174 14H2.826a2 2 0 0 1-1.991-1.819l-.637-7a1.99 1.99 0 0 1 .342-1.31zM2.19 4a1 1 0 0 0-.996 1.09l.637 7a1 1 0 0 0 .995.91h10.348a1 1 0 0 0 .995-.91l.637-7A1 1 0 0 0 13.81 4H2.19zm4.69-1.707A1 1 0 0 0 6.172 2H2.5a1 1 0 0 0-1 .981l.006.139C1.72 3.042 1.95 3 2.19 3h5.396l-.707-.707z"/>
 </svg></a></div>
-						        
+
 						  {% endif %}
 						  {% if post.image %}
 						  	<img class="rounded mt-3" src="{{ post.image.url }}" width="100%" height="auto">
-						      
+
 						  {% endif %}
 					    </div>
 					  </div>
@@ -127,7 +102,7 @@
 				  <div class="card-footer text-muted">
 				  	تاریخ: {{ post.updated_on }}
 				  </div>
-				  
+
 				</div>
 			{% endfor %}
 		{% else %}
@@ -137,6 +112,6 @@
 		{% endif %}
 	</div>
 
-		
+
 	</div>
-</body>
+{% endblock %}

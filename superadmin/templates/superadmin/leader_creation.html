@@ -1,0 +1,31 @@
+{% extends 'superadmin/base.html' %}
+{% block content %}
+
+  <form action="{% url 'superadmin:create_profile' %}" method="post">
+    {% csrf_token %}
+    <div class="">
+      <h3>Leader Creation form</h3>
+      <div class="input-group">
+        <input type="text" name="username" aria-label="Username" placeholder="Username" class="form-control">
+        <input type="password" name="password" aria-label="Password" placeholder="Password" class="form-control">
+      </div>
+      <br>
+
+      <select class="form-select" name="server_ip" id="inputGroupSelect04">
+        <option selected>Choose a server</option>
+        {% for server in servers %}
+          <option value="{{ server.ir_ip }}">{{ server }} > <i class="text-end">{{ server.ir_ip }}</i></option>
+        {% endfor %}
+      </select>
+      <br>
+      <div class="form-floating">
+        <input type="text" name="count" class="form-control" id="inputText2" placeholder="Count">
+        <label for="inputText2">Count</label>
+      </div>
+    </div>
+    <div class="row p-2">
+      <button class="submit btn btn-outline-success col m-1" type="submit" value="Login">Create</button>
+    </div>
+  </form>
+
+{% endblock %}

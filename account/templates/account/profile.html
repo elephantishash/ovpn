@@ -1,61 +1,54 @@
-{% load static %}
-{% get_static_prefix as STATIC_PREFIX %}
-<!DOCTYPE html>
-<html>
-<head>
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Blog</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
-  </head>
-</head>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3" crossorigin="anonymous">
-</script>
-
-
-<style type="text/css">
-
-	$color-mode-type: data;
-
-	@include color-mode(dark) {
-	  .element {
-	    color: var(--bs-primary-text);
-	    background-color: var(--bs-primary-bg-subtle);
-	  }
-	}
-</style>
-
-
-<body class="container mt-3 mb-3">
-	<ul class="nav nav-pills nav-fill">
-	  <li class="nav-item">
-	    <a class="nav-link" aria-current="page" href="{% url 'base:home' %}">Home</a>
-	  </li>
-	  <li class="nav-item">
-	    <a class="nav-link" href="{% url 'blog:blog' 5 %}">Blog</a>
-	  </li>
-	  <li class="nav-item">
-	    <a class="nav-link dropdown-toggle active" data-bs-toggle="dropdown" href="{% url 'account:profile' %}" role="button" aria-expanded="false">Profile</a>
-	    <ul class="dropdown-menu">
-	      <li><a class="dropdown-item" href="{% url 'account:actions' %}">Actions</a></li>
-	      <li><a class="dropdown-item" href="{% url 'account:contact' %}">Contact Us</a></li>
-	      <li><a class="dropdown-item" href="#">Something else here</a></li>
-	      <li><hr class="dropdown-divider"></li>
-	      <li><a class="dropdown-item text-danger" href="{% url 'logout' %}">Log Out</a></li>
-	    </ul>
-	  </li>
-	</ul>
-	<br>
-
+{% extends 'account/base.html' %}
+{% block content %}
 	<h3>Welcome back <i class="text-success">{{ user.username }}</i></h3>
-	<p class="text-muted">your current server ip is {{ profile.server.ir_ip }}</p>
+	<p class="text-muted">
+		Telegram chat_id: {{ profile.chat_id }} <a href="" data-bs-toggle="modal" data-bs-target="#profileEditModal" class="text-decoration-none "><svg class="text-primary" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
+  <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+  <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/>
+</svg></a>
+<br>
+		your current server ip is {{ profile.server.ir_ip }}
+	</p>
 	{% if messages %}
 		{% for message in messages %}
 			<div class="alert alert-danger">{{ message }}</div>
 		{% endfor %}
 	{% endif %}
 	<br>
+	<!-- Edit Modal -->
+	<div class="modal fade" id="profileEditModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	  <div class="modal-dialog">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <h1 class="modal-title fs-5" id="exampleModalLabel"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-telegram text-primary" viewBox="0 0 16 16">
+  <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8.287 5.906c-.778.324-2.334.994-4.666 2.01-.378.15-.577.298-.595.442-.03.243.275.339.69.47l.175.055c.408.133.958.288 1.243.294.26.006.549-.1.868-.32 2.179-1.471 3.304-2.214 3.374-2.23.05-.012.12-.026.166.016.047.041.042.12.037.141-.03.129-1.227 1.241-1.846 1.817-.193.18-.33.307-.358.336a8.154 8.154 0 0 1-.188.186c-.38.366-.664.64.015 1.088.327.216.589.393.85.571.284.194.568.387.936.629.093.06.183.125.27.187.331.236.63.448.997.414.214-.02.435-.22.547-.82.265-1.417.786-4.486.906-5.751a1.426 1.426 0 0 0-.013-.315.337.337 0 0 0-.114-.217.526.526 0 0 0-.31-.093c-.3.005-.763.166-2.984 1.09z"/>
+</svg> Telegram Chat ID</h1>
+	        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+	      </div>
+	      <div class="modal-body">
+	        <p>
+						<h5>what is telegram chat id ?</h5>
+						telegram chat_id is a code for each user in telegram thats help us to send messaages & configs with that code through our <a href="https://t.me/final_destination_bot">telegram bot</a>.<br>
+						<br>
+						<h5>How to add this option ?</h5>
+						you just shoud to go to this <a href="https://t.me/my_id_bot">Bot</a> and hit start then copy you Chat ID and pate it in this field and save changes... Easy !<br><br>
+						<form action="{% url 'account:change_chat_id' profile.id %}" method="post">
+							{% csrf_token %}
+							<div class="input-group mb-3">
+							  <div class="form-floating">
+							    <input type="text" class="form-control" name="chat_id" id="floatingInputGroup1" placeholder="Chat id">
+							    <label for="floatingInputGroup1">Chat id</label>
+							  </div>
+							</div>
+							<button type="submit" class="btn btn-outline-primary">Save changes</button>
+						</form>
+					</p>
+	      </div>
+	    </div>
+	  </div>
+	</div>
 
-	{% if accounts_left != 0 %}
+	{% if coins != 0 %}
 		<form action="{% url 'account:create_account' %}" method="post">
 			{% csrf_token %}
 			<div class="input-group mb-3">
@@ -70,8 +63,12 @@
 	{% endif %}
 
 	<div class="m-2">
-		<i class="text-muted fs-6 float-start">accounts count: {{ accounts_count }}</i>
-		<i class="text-muted fs-6 float-end">accounts left: {{ accounts_left }}</i>
+		<i class="text-muted fs-6 float-start">Accounts count: {{ accounts_count }}</i>
+		<i class="text-warning fs-6 float-end"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-coin" viewBox="0 0 16 16">
+  <path d="M5.5 9.511c.076.954.83 1.697 2.182 1.785V12h.6v-.709c1.4-.098 2.218-.846 2.218-1.932 0-.987-.626-1.496-1.745-1.76l-.473-.112V5.57c.6.068.982.396 1.074.85h1.052c-.076-.919-.864-1.638-2.126-1.716V4h-.6v.719c-1.195.117-2.01.836-2.01 1.853 0 .9.606 1.472 1.613 1.707l.397.098v2.034c-.615-.093-1.022-.43-1.114-.9H5.5zm2.177-2.166c-.59-.137-.91-.416-.91-.836 0-.47.345-.822.915-.925v1.76h-.005zm.692 1.193c.717.166 1.048.435 1.048.91 0 .542-.412.914-1.135.982V8.518l.087.02z"/>
+  <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+  <path d="M8 13.5a5.5 5.5 0 1 1 0-11 5.5 5.5 0 0 1 0 11zm0 .5A6 6 0 1 0 8 2a6 6 0 0 0 0 12z"/>
+</svg> Coins: {{ coins }}</i>
 	</div>
 	<br>
 
@@ -95,7 +92,7 @@
 				    	</div>
 				    	<div class="modal-body">
 					        <div class="">
-							    
+
 							    <p class=""><i class="text-muted fs-6">password: </i>{{ account.password }}</p>
 							    <p class="text-muted">{{ account.server }} > {{ account.server.ir_ip }}</p>
 							    <p class="float-start">{{ account.date_end|timeuntil }} left</p>
@@ -103,8 +100,16 @@
 							</div>
 				    	</div>
 				    	<div class="modal-footer">
-				    		<a class="btn btn-outline-success" href="{% url 'account:charge_account' account.id %}">Charge 1 month</a>
-				    		<a class="btn btn-primary" href="{{ account.file.url }}">Download OVPN file</a>
+				    		<a class="btn btn-outline-success" href="{% url 'account:charge_account' account.id %}"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-lightning-charge" viewBox="0 0 16 16">
+  <path d="M11.251.068a.5.5 0 0 1 .227.58L9.677 6.5H13a.5.5 0 0 1 .364.843l-8 8.5a.5.5 0 0 1-.842-.49L6.323 9.5H3a.5.5 0 0 1-.364-.843l8-8.5a.5.5 0 0 1 .615-.09zM4.157 8.5H7a.5.5 0 0 1 .478.647L6.11 13.59l5.732-6.09H9a.5.5 0 0 1-.478-.647L9.89 2.41 4.157 8.5z"/>
+</svg> Charge 30 days</a>
+				    		<a class="btn btn-outline-primary" href="{{ account.file.url }}"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-box-arrow-down" viewBox="0 0 16 16">
+  <path fill-rule="evenodd" d="M3.5 10a.5.5 0 0 1-.5-.5v-8a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 .5.5v8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 0 0 1h2A1.5 1.5 0 0 0 14 9.5v-8A1.5 1.5 0 0 0 12.5 0h-9A1.5 1.5 0 0 0 2 1.5v8A1.5 1.5 0 0 0 3.5 11h2a.5.5 0 0 0 0-1h-2z"/>
+  <path fill-rule="evenodd" d="M7.646 15.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 14.293V5.5a.5.5 0 0 0-1 0v8.793l-2.146-2.147a.5.5 0 0 0-.708.708l3 3z"/>
+</svg> Download</a>
+								<a class="btn btn-primary" href="{% url 'account:send_profile' account.id %}"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-telegram" viewBox="0 0 16 16">
+  <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8.287 5.906c-.778.324-2.334.994-4.666 2.01-.378.15-.577.298-.595.442-.03.243.275.339.69.47l.175.055c.408.133.958.288 1.243.294.26.006.549-.1.868-.32 2.179-1.471 3.304-2.214 3.374-2.23.05-.012.12-.026.166.016.047.041.042.12.037.141-.03.129-1.227 1.241-1.846 1.817-.193.18-.33.307-.358.336a8.154 8.154 0 0 1-.188.186c-.38.366-.664.64.015 1.088.327.216.589.393.85.571.284.194.568.387.936.629.093.06.183.125.27.187.331.236.63.448.997.414.214-.02.435-.22.547-.82.265-1.417.786-4.486.906-5.751a1.426 1.426 0 0 0-.013-.315.337.337 0 0 0-.114-.217.526.526 0 0 0-.31-.093c-.3.005-.763.166-2.984 1.09z"/>
+</svg> Send</a>
 
 				    	</div>
 				    </div>
@@ -117,7 +122,4 @@
 		  You have not created an account yet
 		</div>
 	{% endif %}
-</body>
-<footer class="bd-footer py-10 mt-5">
-	
-</footer>
+{% endblock %}

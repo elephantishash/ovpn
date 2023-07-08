@@ -1,5 +1,6 @@
 db.sqlite3
 media/Accounts_file
+media/Accounts_file-old
 cli
 account/__pycache__
 account/migrations
@@ -12,4 +13,5 @@ account/__pycache__
 account/migrations/__pycache__
 media/.DS_Store
 superadmin/__pycache__
+__MACOSX
 

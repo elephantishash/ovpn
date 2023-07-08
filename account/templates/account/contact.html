@@ -1,41 +1,5 @@
-{% load static %}
-{% get_static_prefix as STATIC_PREFIX %}
-<!DOCTYPE html>
-<html data-bs-theme="light">
-<head>
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Blog</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
-  </head>
-</head>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3" crossorigin="anonymous">
-</script>
-
-
-<style type="text/css">
-	@media only screen and (min-width: 768px) {
-		
-	}
-
-	@media only screen and (max-width: 768px) {
-		
-	}
-</style>
-
-
-<body class="container mt-3 mb-3">
-	<ul class="nav nav-pills nav-fill">
-	  <li class="nav-item">
-	    <a class="nav-link" aria-current="page" href="{% url 'base:home' %}">Home</a>
-	  </li>
-	  <li class="nav-item">
-	    <a class="nav-link" href="{% url 'blog:blog' 5 %}">Blog</a>
-	  </li>
-	  <li class="nav-item">
-	    <a class="nav-link active" href="{% url 'account:profile' %}">Profile</a>
-	  </li>
-	</ul>
-	<br>
+{% extends 'account/base.html' %}
+{% block content %}
 
 	<h1>there is 3 ways !</h1>
 	<h6>personal telegram: <a href="https://t.me/parsaishash">Parsa Is Hash</a> </h6>
@@ -44,4 +8,4 @@
 	<div class="alert alert-danger" role="alert">
 	  Pleas do not share the contact information exept chanel !!!
 	</div>
-</body>
+{% endblock %}

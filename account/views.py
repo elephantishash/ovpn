@@ -31,17 +31,16 @@ def profile(request):
 			profile = get_object_or_404(Profile, user = request.user)
 			accounts = Account.objects.filter(leader=profile).order_by('-date_end')
 			accounts_count = accounts.count()
-			all_account = profile.count
-			accounts_left = all_account - accounts_count
+			coins = profile.count
 
 			today = timezone.datetime.today().day
 
 			context = {'profile': profile,
 				'accounts': accounts,
+				'coins': coins,
 				'accounts_count': accounts_count,
-				'accounts_left': accounts_left,
 				'today': today,
-			} 
+			}
 
 			return render(request, 'account/profile.html', context)
 	else:
@@ -65,31 +64,38 @@ def login_view(request):
 	return render(request, 'account/login.html')
 
 def account_generator(profile, server_ip, account_name):
+	none_name = ''
 	for i in os.listdir('{}/cli/{}'.format(current_dir, server_ip)):
 		if i.startswith('cli_'):
 			none_name = i
 			break
 
-	global pas
-	pas = ''
-	with open('{}/cli/{}/pass.txt'.format(current_dir, server_ip), 'r') as f:
-		lines = f.readlines()
-		for line in lines:
-			print(line)
-			if line.startswith(none_name):
-				pas = line.split(' : ')[1]
+	if none_name != '':
+		global pas
+		pas = ''
+		with open('{}/cli/{}/pass.txt'.format(current_dir, server_ip), 'r') as f:
+			lines = f.readlines()
+			for line in lines:
+				print(line)
+				if line.startswith(none_name):
+					pas = line.split(' : ')[1]
 
-	os.rename('{}/cli/{}/{}'.format(current_dir, server_ip, none_name), '{}/cli/{}/{}.ovpn'.format(current_dir, server_ip, account_name))
-	with open('{}/cli/{}/{}.ovpn'.format(current_dir,server_ip, account_name), 'rb') as f:
-		ovpn_file = File(f)
-		ovpn_file = File(f, name=os.path.basename('{}/cli/{}/{}.ovpn'.format(current_dir, server_ip, account_name)))
-		account = Account(name=account_name, password = pas, file = ovpn_file, server = profile.server, cli_name = none_name.split('.')[0], leader = profile)
-		account.save()
+		os.rename('{}/cli/{}/{}'.format(current_dir, server_ip, none_name), '{}/cli/{}/{}.ovpn'.format(current_dir, server_ip, account_name))
+		with open('{}/cli/{}/{}.ovpn'.format(current_dir,server_ip, account_name), 'rb') as f:
+			ovpn_file = File(f)
+			ovpn_file = File(f, name=os.path.basename('{}/cli/{}/{}.ovpn'.format(current_dir, server_ip, account_name)))
+			account = Account(name=account_name, password = pas, file = ovpn_file, server = profile.server, cli_name = none_name.split('.')[0], leader = profile)
+			account.save()
+			os.remove('{}/cli/{}/{}.ovpn'.format(current_dir, server_ip, account_name))
 
-	document_sender(profile.chat_id, '{}/cli/{}/{}.ovpn'.format(current_dir, server_ip, account_name), pas)
+		document_sender(profile.chat_id, '{}/cli/{}/{}.ovpn'.format(current_dir, server_ip, account_name), pas)
 
-	action = Action(leader = profile, action = 0, account = account)
-	action.save()
+		action = Action(leader = profile, action = 0, account = account)
+		action.save()
+
+		return True
+	else:
+		return False
 
 def create_account(request):
 	if request.user.is_authenticated:
@@ -103,14 +109,16 @@ def create_account(request):
 				profile = get_object_or_404(Profile, user = request.user)
 				server_ip = profile.server.ir_ip
 
-				account_generator(profile, server_ip, account_name)
+				if account_generator(profile, server_ip, account_name):
+					profile.count -= 1
+					profile.save()
+				else:
+					#send notif to admin for charging server
+					messages.add_message(request, messages.INFO, 'There is no raw account on your server, please wait until admin charge it again')
 			else:
 				messages.add_message(request, messages.INFO, 'Chose somename and donnot leave it blank !')
-	
+
 	return redirect('account:profile')
-
-
-
 
 def charge_account(request, account_id):
 	if request.user.is_authenticated:
@@ -118,9 +126,9 @@ def charge_account(request, account_id):
 		account.date_end += datetime.timedelta(days=30)
 		account.save()
 
-		leader = get_object_or_404(Profile, id=account.leader.id)
-		leader.count -= 1
-		leader.save()
+		profile = get_object_or_404(Profile, id=account.leader.id)
+		profile.count -= 1
+		profile.save()
 
 		action = Action(leader = get_object_or_404(Profile, user = request.user), action = 1, account = account)
 		action.save()
@@ -128,6 +136,26 @@ def charge_account(request, account_id):
 		return redirect('account:profile')
 	else:
 		return redirect('account:profile')
+
+def send_profile(request, account_id):
+	if request.user.is_authenticated:
+		account = get_object_or_404(Account, id=account_id)
+
+		document_sender(account.leader.chat_id, '{}{}'.format(current_dir, account.file.url), account.password)
+
+		return redirect('account:profile')
+	else:
+		return redirect('account:profile')
+
+def change_chat_id(request, profile_id):
+	profile = get_object_or_404(Profile, pk=profile_id)
+	chat_id = request.POST['chat_id']
+	print(chat_id)
+
+	profile.chat_id = chat_id
+	profile.save()
+
+	return redirect('account:profile')
 
 def actions(request):
 	if request.user.is_authenticated:

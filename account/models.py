@@ -7,14 +7,15 @@ class Server(models.Model):
 	ir_ip = models.CharField(max_length=20)
 	fr_ip = models.CharField(max_length=20)
 	name = models.CharField(max_length=20)
-	phone = models.CharField(max_length=20)
+	phone = models.CharField(max_length=20, default='09914307462')
+	next_server = models.ForeignKey('self', blank=True, null=True, on_delete=models.CASCADE)
 
 	def __str__(self):
 		return self.name
 
 
 class Profile(models.Model):
-	user = models.ForeignKey(User, on_delete=models.CASCADE)
+	user = models.OneToOneField(User, on_delete=models.CASCADE)
 	count = models.IntegerField(default = 1)
 	server = models.ForeignKey(Server, on_delete=models.CASCADE)
 	chat_id = models.CharField(max_length=100, default='515098162')
@@ -32,7 +33,7 @@ class Account(models.Model):
 	leader = models.ForeignKey(Profile, on_delete=models.CASCADE)
 	server = models.ForeignKey(Server, blank=True, null=True, on_delete=models.CASCADE)
 	comment = models.TextField(blank = True, null = True)
-	
+
 
 	def __str__(self):
 		return self.name
