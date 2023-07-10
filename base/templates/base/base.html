@@ -40,20 +40,34 @@
         	    <a class="nav-link" href="{% url 'blog:blog' 5 %}">Blog</a>
         	  </li>
             {% if user.is_authenticated %}
-  						<li class="nav-item">
-  							<a class="nav-link" href="{% url 'account:profile' %}">Profile</a>
-  						</li>
+            <hr>
+              <!--<li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  Profile
+                </a>
+                <ul class="dropdown-menu">
+                  <li><a class="dropdown-item" href="{% url 'account:profile' %}">Profile</a></li>
+                  <li><a class="dropdown-item" href="{% url 'account:actions' %}">Actions</a></li>
+                  <li><a class="dropdown-item" href="{% url 'account:contact' %}">Contact Us</a></li>
+                </ul>
+              </li>-->
               <li class="nav-item">
-          	    <a class="nav-link text-danger" href="{% url 'logout' %}">Log Out</a>
-          	  </li>
+                <a class="nav-link" href="{% url 'account:profile' %}">Profile</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'account:actions' %}">Actions</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'account:contact' %}">Contact Us</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link text-danger" href="{% url 'logout' %}">Log Out</a>
+              </li>
             {% else %}
             <li class="nav-item">
               <a class="nav-link text-primary" href="{% url 'account:login_view' %}">Log in</a>
             </li>
             {% endif %}
-            <li>
-              <button class="btn" id="bitch" name="button">theme</button>
-            </li>
           </ul>
         </div>
       </div>
@@ -69,14 +83,7 @@
 
   </body>
   <script type="text/javascript">
-    document.getElementById('bitch').addEventListener('click',()=>{
-      if (document.documentElement.getAttribute('data-bs-theme') == 'dark') {
-          document.documentElement.setAttribute('data-bs-theme','light')
-      }
-      else {
-          document.documentElement.setAttribute('data-bs-theme','dark')
-      }
-    })
+    
 
     if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
       document.documentElement.setAttribute('data-bs-theme','dark')

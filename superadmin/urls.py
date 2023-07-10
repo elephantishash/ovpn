@@ -9,6 +9,7 @@ urlpatterns = [
     path('', views.home, name='home'),
     path('profile/<int:profile_id>', views.profile, name='profile'),
     path('change_server/<int:profile_id>', views.change_server, name='change_server'),
+    path('charge_coin/<int:profile_id>', views.charge_coin, name='charge_coin'),
     path('server/<int:server_id>', views.server, name='server'),
     path('send_profile/<int:account_id>', views.send_profile, name='send_profile'),
     path('admin_profile/', views.admin_profile, name='admin_profile'),
