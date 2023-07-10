@@ -133,8 +133,8 @@ def charge_coin(request, profile_id):
 	if request.user.is_authenticated:
 		if request.user.is_superuser:
 			profile = get_object_or_404(Profile, id=profile_id)
-			charge_coin = request.POST['charge_coin']
-			profile.count = int(charge_coin)
+			coin_value = request.POST['charge_coin']
+			profile.count = int(coin_value)
 			profile.save()
 			return redirect('superadmin:profile', profile_id)
 	else:
