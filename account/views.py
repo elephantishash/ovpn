@@ -76,7 +76,6 @@ def account_generator(profile, server_ip, account_name):
 		with open('{}/cli/{}/pass.txt'.format(current_dir, server_ip), 'r') as f:
 			lines = f.readlines()
 			for line in lines:
-				print(line)
 				if line.startswith(none_name):
 					pas = line.split(' : ')[1]
 
@@ -86,9 +85,9 @@ def account_generator(profile, server_ip, account_name):
 			ovpn_file = File(f, name=os.path.basename('{}/cli/{}/{}.ovpn'.format(current_dir, server_ip, account_name)))
 			account = Account(name=account_name, password = pas, file = ovpn_file, server = profile.server, cli_name = none_name.split('.')[0], leader = profile)
 			account.save()
-			os.remove('{}/cli/{}/{}.ovpn'.format(current_dir, server_ip, account_name))
 
 		document_sender(profile.chat_id, '{}/cli/{}/{}.ovpn'.format(current_dir, server_ip, account_name), pas)
+		os.remove('{}/cli/{}/{}.ovpn'.format(current_dir, server_ip, account_name))
 
 		action = Action(leader = profile, action = 0, account = account)
 		action.save()
