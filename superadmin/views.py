@@ -58,7 +58,6 @@ def home(request):
 			servers = Server.objects.all()
 			accounts = Account.objects.all()
 
-			print(request.META['HTTP_REFERER'])
 
 			admin_accounts = Account.objects.filter(leader=get_object_or_404(Profile, user=request.user)).order_by('-date_end')
 
@@ -172,7 +171,7 @@ def create_account(request):
 				else:
 					messages.add_message(request, messages.INFO, 'Chose somename and donnot leave it blank !')
 
-			return redirect('superadmin:home')
+			return redirect('superadmin:admin_profile')
 		else:
 			return redirect('account:profile')
 	else:

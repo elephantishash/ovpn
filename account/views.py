@@ -26,14 +26,15 @@ def profile(request):
 	if request.user.is_authenticated:
 		if request.user.is_superuser:
 			return redirect('superadmin:home')
-
 		else:
 			profile = get_object_or_404(Profile, user = request.user)
 			accounts = Account.objects.filter(leader=profile).order_by('-date_end')
 			accounts_count = accounts.count()
 			coins = profile.count
-
 			today = timezone.datetime.today().day
+
+			if profile.chat_id == "515098162":
+				messages.add_message(request, messages.INFO, 'Please enter your Telegram Chat ID in edit section')
 
 			context = {'profile': profile,
 				'accounts': accounts,
