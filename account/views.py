@@ -99,24 +99,25 @@ def account_generator(profile, server_ip, account_name):
 
 def create_account(request):
 	if request.user.is_authenticated:
-		account_name = request.POST['account_name']
+		profile = get_object_or_404(Profile, user = request.user)
+		if profile.count != 0:
+			account_name = request.POST['account_name']
 
-		try:
-			get_object_or_404(Account, name=account_name)
-			messages.add_message(request, messages.INFO, 'This name already taken')
-		except:
-			if account_name != "":
-				profile = get_object_or_404(Profile, user = request.user)
-				server_ip = profile.server.ir_ip
+			try:
+				get_object_or_404(Account, name=account_name)
+				messages.add_message(request, messages.INFO, 'This name already taken')
+			except:
+				if account_name != "":
+					server_ip = profile.server.ir_ip
 
-				if account_generator(profile, server_ip, account_name):
-					profile.count -= 1
-					profile.save()
+					if account_generator(profile, server_ip, account_name):
+						profile.count -= 1
+						profile.save()
+					else:
+						#send notif to admin for charging server
+						messages.add_message(request, messages.INFO, 'There is no raw account on your server, please wait until admin charge it again')
 				else:
-					#send notif to admin for charging server
-					messages.add_message(request, messages.INFO, 'There is no raw account on your server, please wait until admin charge it again')
-			else:
-				messages.add_message(request, messages.INFO, 'Chose somename and donnot leave it blank !')
+					messages.add_message(request, messages.INFO, 'Chose somename and donnot leave it blank !')
 
 	return redirect('account:profile')
 
