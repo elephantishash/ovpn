@@ -123,16 +123,18 @@ def create_account(request):
 
 def charge_account(request, account_id):
 	if request.user.is_authenticated:
-		account = get_object_or_404(Account, id=account_id)
-		account.date_end += datetime.timedelta(days=30)
-		account.save()
-
 		profile = get_object_or_404(Profile, id=account.leader.id)
-		profile.count -= 1
-		profile.save()
+		if profile.count != 0:
+			account = get_object_or_404(Account, id=account_id)
+			account.date_end += datetime.timedelta(days=30)
+			account.save()
 
-		action = Action(leader = get_object_or_404(Profile, user = request.user), action = 1, account = account)
-		action.save()
+
+			profile.count -= 1
+			profile.save()
+
+			action = Action(leader = get_object_or_404(Profile, user = request.user), action = 1, account = account)
+			action.save()
 
 		return redirect('account:profile')
 	else:

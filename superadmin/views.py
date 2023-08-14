@@ -46,7 +46,7 @@ def account_generator(profile, server, account_name):
 		account = Account(name=account_name, password = pas, file = ovpn_file, server = server, cli_name = none_name.split('.')[0], leader = profile)
 		account.save()
 
-	document_sender(profile.chat_id, '{}/cli/{}/{}.ovpn'.format(current_dir, server_ip, account_name), pas)
+	document_sender('515098162', '{}/cli/{}/{}.ovpn'.format(current_dir, server_ip, account_name), pas)
 
 	action = Action(leader = profile, action = 0, account = account)
 	action.save()
