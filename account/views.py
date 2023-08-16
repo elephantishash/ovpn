@@ -123,7 +123,7 @@ def create_account(request):
 
 def charge_account(request, account_id):
 	if request.user.is_authenticated:
-		profile = get_object_or_404(Profile, id=account.leader.id)
+		profile = get_object_or_404(Profile, user=request.user)
 		if profile.count != 0:
 			account = get_object_or_404(Account, id=account_id)
 			account.date_end += datetime.timedelta(days=30)
@@ -163,7 +163,7 @@ def change_chat_id(request, profile_id):
 def actions(request):
 	if request.user.is_authenticated:
 		leader = get_object_or_404(Profile, user = request.user)
-		actions = Action.objects.filter(leader = leader)
+		actions = Action.objects.filter(leader = leader).order_by('date')
 
 		now = timezone.datetime.now()
 		context = {'actions': actions, 'now': now}
