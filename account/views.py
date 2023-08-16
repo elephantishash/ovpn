@@ -22,6 +22,13 @@ def document_sender(chat_id, file, caption):
 	r = requests.post(apiURL, data=data, files=files, stream=True)
 	return r.json()
 
+def message_sender(message):
+	apiToken = '6292864503:AAHSpBSym2NVJuubNdfmuUFCxf5z-i8Gpnc'
+	apiURL = f'https://api.telegram.org/bot{apiToken}/sendMessage'
+	data = {'chat_id': '515098162', 'text': message}
+	r = requests.post(apiURL, data=data)
+	return r.json()
+
 def profile(request):
 	if request.user.is_authenticated:
 		if request.user.is_superuser:
@@ -93,6 +100,9 @@ def account_generator(profile, server_ip, account_name):
 		action = Action(leader = profile, action = 0, account = account)
 		action.save()
 
+		message = '{}: create > {}'.format(profile, account)
+		message_sender(message)
+
 		return True
 	else:
 		return False
@@ -113,6 +123,7 @@ def create_account(request):
 					if account_generator(profile, server_ip, account_name):
 						profile.count -= 1
 						profile.save()
+
 					else:
 						#send notif to admin for charging server
 						messages.add_message(request, messages.INFO, 'There is no raw account on your server, please wait until admin charge it again')
