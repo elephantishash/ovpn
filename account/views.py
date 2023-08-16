@@ -147,6 +147,9 @@ def charge_account(request, account_id):
 			action = Action(leader = get_object_or_404(Profile, user = request.user), action = 1, account = account)
 			action.save()
 
+			message = '{}: create > {}'.format(profile, account)
+			message_sender(message)
+
 		return redirect('account:profile')
 	else:
 		return redirect('account:profile')
