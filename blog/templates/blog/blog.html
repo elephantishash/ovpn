@@ -65,7 +65,7 @@
 		{% if posts %}
 			{% for post in posts %}
 				<div class="card rounded mb-2">
-				  <div class="p-3">
+				  <div class="p-3" style="direction: rtl;" lang="fa">
 				    <a style="text-decoration-line: none" href="{% url 'blog:post_detail' post.id  %}" data-bs-toggle="modal" data-bs-target="#exampleModal{{ post.id }}"><h5 class="text-end">{{ post.title }}</h5></a>
 				    <p class="text-end">{{ post.content | slice:":500" }}</p>
 				  </div>
@@ -78,7 +78,7 @@
 					        <h1 class="modal-title float-center fs-5" id="exampleModalLabel"><h5 class="text-center">{{ post.title }}</h5></h1>
 					        <button type="button" class="btn-close float-end" data-bs-dismiss="modal" aria-label="Close"></button>
 					      </div>
-					      <div class="modal-body">
+					      <div class="modal-body" style="direction: rtl;">
 					        <div class="p-3">
 							    <a style="text-decoration-line: none" href="{% url 'blog:post_detail' post.id  %}" ></a>
 							    <p class="text-end">{{ post.content }}</p>
