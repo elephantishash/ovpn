@@ -17,3 +17,5 @@ __MACOSX
 Backup
 account/__pycache__
 revoke_87.107.162.39
+.DS_Store
+.secret
