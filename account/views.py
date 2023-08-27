@@ -22,10 +22,10 @@ def document_sender(chat_id, file, caption):
 	r = requests.post(apiURL, data=data, files=files, stream=True)
 	return r.json()
 
-def message_sender(message):
+def message_sender(message, caht_id):
 	apiToken = '6292864503:AAHSpBSym2NVJuubNdfmuUFCxf5z-i8Gpnc'
 	apiURL = f'https://api.telegram.org/bot{apiToken}/sendMessage'
-	data = {'chat_id': '515098162', 'text': message}
+	data = {'chat_id': chat_id, 'text': message}
 	r = requests.post(apiURL, data=data)
 	return r.json()
 
@@ -71,6 +71,14 @@ def check(request):
 def login_view(request):
 	return render(request, 'account/login.html')
 
+def create_ssh_config(username, password, expdate):
+	token = '1693053954X7H0C3M46ETKGSY'
+	url = "https://cofee.fdlock.xyz:1978/api/adduser"
+
+	j = {'token': token, 'username': username, 'password': password, 'multiuser': '1', 'traffic': '50', 'type_traffic': 'gb', 'expdate': expdate}
+	x = requests.post(url, json=j)
+	return x
+
 def account_generator(profile, server_ip, account_name):
 	none_name = ''
 	for i in os.listdir('{}/cli/{}'.format(current_dir, server_ip)):
@@ -94,14 +102,17 @@ def account_generator(profile, server_ip, account_name):
 			account = Account(name=account_name, password = pas, file = ovpn_file, server = profile.server, cli_name = none_name.split('.')[0], leader = profile)
 			account.save()
 
+		create_ssh_config(account.name, account.password, account.date_end.strftime("%Y-%m-%d"))
 		document_sender(profile.chat_id, '{}/cli/{}/{}.ovpn'.format(current_dir, server_ip, account_name), pas)
+		m = "Host: cofee.fdlock.xyz\nport: 22\nusername: {}\npassword: {}".format(account.name, account.password)
+		message_sender(m, profile.chat_id)
 		os.remove('{}/cli/{}/{}.ovpn'.format(current_dir, server_ip, account_name))
 
 		action = Action(leader = profile, action = 0, account = account)
 		action.save()
 
 		message = '{}: create > {}'.format(profile, account)
-		message_sender(message)
+		message_sender(message, '515098162')
 
 		return True
 	else:
@@ -148,7 +159,7 @@ def charge_account(request, account_id):
 			action.save()
 
 			message = '{}: charge > {}'.format(profile, account)
-			message_sender(message)
+			message_sender(message, '515098162')
 
 		return redirect('account:profile')
 	else:
