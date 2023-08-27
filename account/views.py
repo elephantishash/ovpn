@@ -22,7 +22,7 @@ def document_sender(chat_id, file, caption):
 	r = requests.post(apiURL, data=data, files=files, stream=True)
 	return r.json()
 
-def message_sender(message, caht_id):
+def message_sender(message, chat_id):
 	apiToken = '6292864503:AAHSpBSym2NVJuubNdfmuUFCxf5z-i8Gpnc'
 	apiURL = f'https://api.telegram.org/bot{apiToken}/sendMessage'
 	data = {'chat_id': chat_id, 'text': message}
