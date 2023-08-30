@@ -19,4 +19,5 @@ urlpatterns = [
     path('server_creation/', views.server_creation, name='server_creation'),
     path('create_server/', views.create_server, name='create_server'),
     path('test/', views.test, name='test'),
+    path('reverse_ssh_status/<int:server_id>', views.reverse_ssh_status, name='reverse_ssh_status'),
 ]

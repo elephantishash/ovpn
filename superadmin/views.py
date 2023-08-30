@@ -273,3 +273,36 @@ def create_server(request):
 			return redirect('account:profile')
 	else:
 		return redirect('account:login_view')
+
+
+def activate_ssh_user(username):
+	token = '1693053954X7H0C3M46ETKGSY'
+	url = "https://cofee.fdlock.xyz:1978/api/active"
+
+	j = {'token': token, 'username': username}
+	x = requests.post(url, json=j)
+	return x
+
+def deactivate_ssh_user(username):
+	token = '1693053954X7H0C3M46ETKGSY'
+	url = "https://cofee.fdlock.xyz:1978/api/deactive"
+
+	j = {'token': token, 'username': username}
+	x = requests.post(url, json=j)
+	return x
+
+def reverse_ssh_status(request, server_id):
+	server = get_object_or_404(Server, id=server_id)
+	new_status = not server.ssh_status
+
+	acc_list = Account.objects.filter(server=server)
+	for acc in acc_list:
+		if new_status:
+			activate_ssh_user(acc.name)
+		else:
+			deactivate_ssh_user(acc.name)
+
+	server.ssh_status = new_status
+	server.save()
+
+	return redirect('superadmin:server', server_id)

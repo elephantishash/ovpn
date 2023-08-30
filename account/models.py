@@ -1,4 +1,5 @@
 from django.db import models
+from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.models import User
 from django.utils import timezone
 import datetime
@@ -8,7 +9,8 @@ class Server(models.Model):
 	fr_ip = models.CharField(max_length=20)
 	name = models.CharField(max_length=20)
 	phone = models.CharField(max_length=20, default='09914307462')
-	next_server = models.ForeignKey('self', blank=True, null=True, on_delete=models.CASCADE)
+	ssh_status = models.BooleanField(default=False)
+	count = models.IntegerField(default = 200)
 
 	def __str__(self):
 		return self.name

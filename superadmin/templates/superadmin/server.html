@@ -4,7 +4,11 @@
 	<div class="m-1">
 		<i class="text-muted float-end">{{ server.ir_ip }}</i><h5>{{ server }}</h5>
 	</div>
-
+	{% if server.ssh_status == False %}
+		<a href="{% url 'superadmin:reverse_ssh_status' server.id %}" class="btn btn-outline-success">Activate SSH server</a>
+	{% else %}
+		<a href="{% url 'superadmin:reverse_ssh_status' server.id %}" class="btn btn-outline-danger">Deacitvate SSH server</a>
+	{% endif %}
 	<div class="m-1"><i class="text-muted float-end">sum: {{ server.account_set.count }}</i><h6 class="text-muted">Leaders list:</h6></div>
 	<ul class="list-group list-group">
 		{% for profile in profiles %}
