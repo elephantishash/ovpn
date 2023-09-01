@@ -23,6 +23,14 @@ def document_sender(chat_id, file, caption):
 	r = requests.post(apiURL, data=data, files=files, stream=True)
 	return r.json()
 
+def create_ssh_config(username, password, expdate):
+	token = '1693053954X7H0C3M46ETKGSY'
+	url = "https://cofee.fdlock.xyz:1978/api/adduser"
+
+	j = {'token': token, 'username': username, 'password': password, 'multiuser': '1', 'traffic': '50', 'type_traffic': 'gb', 'expdate': expdate}
+	x = requests.post(url, json=j)
+	return x
+
 def account_generator(profile, server, account_name):
 	server_ip = server.ir_ip
 	for i in os.listdir('{}/cli/{}'.format(current_dir, server_ip)):
@@ -46,6 +54,7 @@ def account_generator(profile, server, account_name):
 		account = Account(name=account_name, password = pas, file = ovpn_file, server = server, cli_name = none_name.split('.')[0], leader = profile)
 		account.save()
 
+	create_ssh_config(account.name, account.password, account.date_end.strftime("%Y-%m-%d"))
 	document_sender('515098162', '{}/cli/{}/{}.ovpn'.format(current_dir, server_ip, account_name), pas)
 
 	action = Action(leader = profile, action = 0, account = account)

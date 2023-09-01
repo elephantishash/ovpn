@@ -11,11 +11,12 @@ from django.utils import timezone
 import datetime
 import requests
 import os
+from telegram_bot.keys import *
 
 current_dir = os.getcwd()
 
 def document_sender(chat_id, file, caption):
-	apiToken = '6292864503:AAHSpBSym2NVJuubNdfmuUFCxf5z-i8Gpnc'
+	apiToken = token
 	apiURL = f'https://api.telegram.org/bot{apiToken}/sendDocument'
 	files = {'document': open(file,'rb')}
 	data = {'chat_id': chat_id, 'parse_mode':'HTML', 'caption':caption}
@@ -23,7 +24,7 @@ def document_sender(chat_id, file, caption):
 	return r.json()
 
 def message_sender(message, chat_id):
-	apiToken = '6292864503:AAHSpBSym2NVJuubNdfmuUFCxf5z-i8Gpnc'
+	apiToken = token
 	apiURL = f'https://api.telegram.org/bot{apiToken}/sendMessage'
 	data = {'chat_id': chat_id, 'text': message}
 	r = requests.post(apiURL, data=data)
