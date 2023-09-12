@@ -80,6 +80,22 @@ def create_ssh_config(username, password, expdate):
 	x = requests.post(url, json=j)
 	return x
 
+def activate_ssh_user(username):
+	token = '1693053954X7H0C3M46ETKGSY'
+	url = "https://cofee.fdlock.xyz:1978/api/active"
+
+	j = {'token': token, 'username': username}
+	x = requests.post(url, json=j)
+	return x
+
+def deactivate_ssh_user(username):
+	token = '1693053954X7H0C3M46ETKGSY'
+	url = "https://cofee.fdlock.xyz:1978/api/deactive"
+
+	j = {'token': token, 'username': username}
+	x = requests.post(url, json=j)
+	return x
+
 def account_generator(profile, server_ip, account_name):
 	none_name = ''
 	for i in os.listdir('{}/cli/{}'.format(current_dir, server_ip)):
@@ -104,6 +120,9 @@ def account_generator(profile, server_ip, account_name):
 			account.save()
 
 		create_ssh_config(account.name, account.password, account.date_end.strftime("%Y-%m-%d"))
+		if profile.server.ssh_status == False:
+			deactivate_ssh_user(account.name)
+
 		document_sender(profile.chat_id, '{}/cli/{}/{}.ovpn'.format(current_dir, server_ip, account_name), pas)
 		m = "Host: cofee.fdlock.xyz\nport: 22\nusername: {}\npassword: {}".format(account.name, account.password)
 		message_sender(m, profile.chat_id)
