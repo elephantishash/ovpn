@@ -11,12 +11,12 @@ from django.utils import timezone
 import datetime
 import requests
 import os
-from telegram_bot.keys import *
+from keys import *
 
 current_dir = os.getcwd()
 
 def document_sender(chat_id, file, caption):
-	apiToken = token
+	apiToken = telegram_bot_token
 	apiURL = f'https://api.telegram.org/bot{apiToken}/sendDocument'
 	files = {'document': open(file,'rb')}
 	data = {'chat_id': chat_id, 'parse_mode':'HTML', 'caption':caption}
@@ -24,7 +24,7 @@ def document_sender(chat_id, file, caption):
 	return r.json()
 
 def message_sender(message, chat_id):
-	apiToken = token
+	apiToken = telegram_bot_token
 	apiURL = f'https://api.telegram.org/bot{apiToken}/sendMessage'
 	data = {'chat_id': chat_id, 'text': message}
 	r = requests.post(apiURL, data=data)
@@ -73,7 +73,7 @@ def login_view(request):
 	return render(request, 'account/login.html')
 
 def create_ssh_config(username, password, expdate):
-	token = '1693053954X7H0C3M46ETKGSY'
+	token = xpanel_token
 	url = "https://cofee.fdlock.xyz:1978/api/adduser"
 
 	j = {'token': token, 'username': username, 'password': password, 'multiuser': '1', 'traffic': '50', 'type_traffic': 'gb', 'expdate': expdate}
@@ -81,7 +81,7 @@ def create_ssh_config(username, password, expdate):
 	return x
 
 def activate_ssh_user(username):
-	token = '1693053954X7H0C3M46ETKGSY'
+	token = xpanel_token
 	url = "https://cofee.fdlock.xyz:1978/api/active"
 
 	j = {'token': token, 'username': username}
@@ -89,7 +89,7 @@ def activate_ssh_user(username):
 	return x
 
 def deactivate_ssh_user(username):
-	token = '1693053954X7H0C3M46ETKGSY'
+	token = xpanel_token
 	url = "https://cofee.fdlock.xyz:1978/api/deactive"
 
 	j = {'token': token, 'username': username}

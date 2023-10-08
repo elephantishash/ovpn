@@ -1,20 +1,20 @@
-//import 'bootstrap/dist/css/bootstrap.min.css';
+import logo from './logo.svg';
 import './App.css';
-//import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
-import {
-  BrowserRouter as Router,
-  Route,
-} from "react-router-dom";
 import HomePage from './pages/HomePage'
 import LoginPage from './pages/LoginPage'
-
+import Header from './components/Header'
+import PrivateRoute from "./utils/PrivateRoute"
+import { BrowserRouter, Routes, Route } from "react-router-dom"
 
 function App() {
   return (
-      <Router>
-          <Route exact path="/" component={HomePage} />
-          <Route exact path="/login" component={LoginPage} />
-      </Router>
+    <BrowserRouter>
+      <Header/>
+      <Routes>
+        <Route element={<HomePage />} path="/" />
+        <Route element={<LoginPage />} path="/login" />
+      </Routes>
+    </BrowserRouter>
   );
 }
 

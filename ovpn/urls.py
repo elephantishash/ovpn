@@ -18,6 +18,7 @@ from django.urls import path, include
 from django.conf import settings
 from django.contrib.auth import views as auth_views
 from django.conf.urls.static import static
+from rest_framework_simplejwt import views as jwt_views
 import os
 
 urlpatterns = [
@@ -28,6 +29,13 @@ urlpatterns = [
     path('superadmin/', include('superadmin.urls')),
     path('logout/', auth_views.LogoutView.as_view(template_name='account/login.html'), name='logout'),
     path('api/', include('api.urls')),
+    path('token/',
+          jwt_views.TokenObtainPairView.as_view(),
+          name ='token_obtain_pair'),
+    path('token/refresh/',
+          jwt_views.TokenRefreshView.as_view(),
+          name ='token_refresh'),
+
 ]
 
 
