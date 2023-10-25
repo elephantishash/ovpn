@@ -11,7 +11,7 @@ from django.utils import timezone
 import datetime
 import requests
 import os
-from keys import *
+from keys import telegram_bot_token, xpanel_token
 
 current_dir = os.getcwd()
 
