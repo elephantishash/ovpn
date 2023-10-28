@@ -48,3 +48,19 @@ def revoke_all():
             f.write("\n".join(revoke_server_cli))
     
     return revoke_list
+
+
+def message_sender(message, chat_id):
+    apiToken = telegram_bot_token
+    apiURL = f'https://api.telegram.org/bot{apiToken}/sendMessage'
+    data = {'chat_id': chat_id, 'text': message}
+    r = requests.post(apiURL, data=data)
+    return r.json()
+
+def send_revoke_alert():
+    leaders = Profile.objects.all()
+    for leaderr in leaders:
+        l = revoke_by_user(leader.user)
+        message = "the revoke list of {}:\n".format(leader) + '\n'.join(i.name for i in l)
+        message_sender(message, leader.chat_id)
+        print(message)

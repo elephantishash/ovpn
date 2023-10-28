@@ -72,13 +72,17 @@ def check(request):
 def login_view(request):
 	return render(request, 'account/login.html')
 
+use_ssh_creation = False
 def create_ssh_config(username, password, expdate):
-	token = xpanel_token
-	url = "https://cofee.fdlock.xyz:1978/api/adduser"
+	if use_ssh_creation:
+		token = xpanel_token
+		url = "https://cofee.fdlock.xyz:1978/api/adduser"
 
-	j = {'token': token, 'username': username, 'password': password, 'multiuser': '1', 'traffic': '50', 'type_traffic': 'gb', 'expdate': expdate}
-	x = requests.post(url, json=j)
-	return x
+		j = {'token': token, 'username': username, 'password': password, 'multiuser': '1', 'traffic': '50', 'type_traffic': 'gb', 'expdate': expdate}
+		x = requests.post(url, json=j)
+		return x
+	else:
+		pass
 
 def activate_ssh_user(username):
 	token = xpanel_token
