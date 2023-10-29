@@ -46,7 +46,7 @@ def revoke_all():
                 revoke_server_cli.append(acc.cli_name.split(".")[0])
         with open("revoke_{}".format(server.ir_ip), "w") as f:
             f.write("\n".join(revoke_server_cli))
-    
+
     return revoke_list
 
 
@@ -59,7 +59,7 @@ def message_sender(message, chat_id):
 
 def send_revoke_alert():
     leaders = Profile.objects.all()
-    for leaderr in leaders:
+    for leader in leaders:
         l = revoke_by_user(leader.user)
         message = "this accounts gonna to delete:\n".format(leader) + '\n'.join(i.name for i in l)
         message_sender(message, leader.chat_id)
