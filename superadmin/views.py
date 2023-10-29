@@ -12,6 +12,11 @@ from django.utils import timezone
 import datetime
 import requests
 import os
+from revoke import *
+from django import template
+from keys import telegram_bot_token
+
+register = template.Library()
 
 current_dir = os.getcwd()
 
@@ -315,3 +320,21 @@ def reverse_ssh_status(request, server_id):
 	server.save()
 
 	return redirect('superadmin:server', server_id)
+
+def revoke_list(request):
+	revoke_by_leader_dict = {}
+	leaders = Profile.objects.all()
+	for leader in leaders:
+		l = revoke_by_user(leader.user)
+		revoke_by_leader_dict[leader] =  l
+
+	context = {
+		'leaders': leaders,
+		'revoke_dict': revoke_by_leader_dict,
+	}
+	return render(request, 'superadmin/revoke_list.html', context=context)
+
+def revoke_alert(request):
+	send_revoke_alert()
+	print("Done")
+	return redirect('superadmin:revoke_list')

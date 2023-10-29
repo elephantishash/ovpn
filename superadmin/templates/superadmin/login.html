@@ -1,0 +1,25 @@
+{% extends 'account/base.html' %}
+{% block content %}
+	<div class="">
+		<form action="{% url 'account:check' %}" method="post">
+			{% csrf_token %}
+			{% if messages %}
+				{% for message in messages %}
+					<div class="alert alert-danger">{{ message }}</div>
+				{% endfor %}
+			{% endif %}
+			<div class="border p-3 m-3 rounded rounded-3">
+				<div class="col-md-auto">
+					<h3 class="text-center">Login</h5>
+					<input type="username" placeholder="Username" class="form-control" name="username">
+					<br>
+					<input type="password" placeholder="Password" class="form-control" name="password">
+					<br>
+					<div class="row p-2">
+						<button class="submit btn btn-primary col m-1" type="submit" value="Login">Login</button>
+						<button class="submit btn btn-secondary col disabled m-1" type="submit" value="Register">Register</button>
+					</div>
+				</div>
+		</form>
+	</div>
+{% endblock %}

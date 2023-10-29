@@ -1,0 +1,33 @@
+{% extends 'superadmin/base.html' %}
+{% load filtertags %}
+{% block content %}
+
+<h1>Revokattion Panel</h1>
+<div>
+  <a href="{% url 'superadmin:revoke_alert' %}" class="btn btn-outline-success">Alert revoke list to Leaders</a>
+</div>
+<br>
+<div class="accordion" id="accordionFlushExample">
+  {% for leader in leaders %}
+    <div class="accordion-item">
+      <h2 class="accordion-header">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
+          {{ leader }}
+        </button>
+      </h2>
+      <div id="flush-collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+        <div class="accordion-body">
+          <div><i class="text-secondary text-start">Ended Accounts:</i></div><br>
+          <ul class="list-group list-group-flush">
+            {% for account in revoke_dict|get_item:leader %}
+              <li class="list-group-item"><a class="text-decoration-none link-success" href="#">{{ account }}</a></li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+    </div>
+  {% endfor %}
+</div>
+
+
+{% endblock %}

@@ -5,6 +5,7 @@ import os
 from account.models import Profile, Account, Action, Server
 from django.contrib.auth.models import User
 from django.shortcuts import render, get_object_or_404
+from keys import telegram_bot_token
 
 def revoke_by_user(username):
     user = get_object_or_404(User, username=username)
