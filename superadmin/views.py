@@ -16,8 +16,6 @@ from revoke import *
 from django import template
 from keys import telegram_bot_token
 
-register = template.Library()
-
 current_dir = os.getcwd()
 
 def document_sender(chat_id, file, caption):
@@ -194,15 +192,12 @@ def create_account(request):
 def test(request):
 	if request.user.is_authenticated:
 		if request.user.is_superuser:
-			un = request.POST['username']
-			password = request.POST['password']
+			leaders = Profile.objects.all()
+			context = {
+				'leaders': leaders,
+			}
 
-			cn = request.POST['count']
-			si = request.POST['server_ip']
-
-			print(un, password, cn, si)
-
-			return redirect('superadmin:leader_creation')
+			return render(request, 'superadmin/test.html', context=context)
 		else:
 			return redirect('account:profile')
 	else:

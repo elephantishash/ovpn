@@ -1,0 +1,17 @@
+{% extends 'superadmin/base.html' %}
+{% block content %}
+
+<h1>Hello world</h1>
+<tr>
+    <td>{% cycle 'row1' 'row2' as rowcolors %}</td>
+    <td>{{ rowcolors }}</td>
+</tr>
+<tr>
+    <td>{% cycle rowcolors %}</td>
+    <td>{{ rowcolors }}</td>
+</tr>
+
+<hr>
+Time: {% now "H:i" %}
+
+{% endblock %}
