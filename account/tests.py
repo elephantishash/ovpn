@@ -12,5 +12,6 @@ class AccountTest(TestCase):
         return revoke_by_leader_dict
 
 print(AccountTest.get_accounts("self"))
+print("hello world")
 
 # Create your tests here.
