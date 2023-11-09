@@ -12,7 +12,7 @@ ovpn/__pycache__
 account/__pycache__
 account/migrations/__pycache__
 media/.DS_Store
-superadmin/__pycache__/*
+**/superadmin/__pycache__/
 __MACOSX
 Backup
 account/__pycache__
