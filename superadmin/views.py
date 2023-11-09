@@ -26,13 +26,17 @@ def document_sender(chat_id, file, caption):
 	r = requests.post(apiURL, data=data, files=files, stream=True)
 	return r.json()
 
+use_ssh_creation = False
 def create_ssh_config(username, password, expdate):
-	token = '1693053954X7H0C3M46ETKGSY'
-	url = "https://cofee.fdlock.xyz:1978/api/adduser"
+	if use_ssh_creation:
+		token = '1693053954X7H0C3M46ETKGSY'
+		url = "https://cofee.fdlock.xyz:1978/api/adduser"
 
-	j = {'token': token, 'username': username, 'password': password, 'multiuser': '1', 'traffic': '50', 'type_traffic': 'gb', 'expdate': expdate}
-	x = requests.post(url, json=j)
-	return x
+		j = {'token': token, 'username': username, 'password': password, 'multiuser': '1', 'traffic': '50', 'type_traffic': 'gb', 'expdate': expdate}
+		x = requests.post(url, json=j)
+		return x
+	else:
+		pass
 
 def account_generator(profile, server, account_name):
 	server_ip = server.ir_ip

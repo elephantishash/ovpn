@@ -13,6 +13,9 @@ account/__pycache__
 account/migrations/__pycache__
 media/.DS_Store
 **/superadmin/__pycache__/
+superadmin/__pycache__/**
+api/migrations/**
+api/__pycache__/**
 __MACOSX
 Backup
 account/__pycache__
