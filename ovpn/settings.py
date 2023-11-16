@@ -46,7 +46,10 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_simplejwt.token_blacklist',
     'corsheaders',
+    "drf_messages",
 ]
+
+MESSAGE_STORAGE = "drf_messages.storage.DBStorage"
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (

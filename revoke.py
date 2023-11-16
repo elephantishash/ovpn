@@ -62,6 +62,7 @@ def send_revoke_alert():
     leaders = Profile.objects.all()
     for leader in leaders:
         l = revoke_by_user(leader.user)
-        message = "this accounts gonna to delete:\n".format(leader) + '\n'.join(i.name for i in l)
-        message_sender(message, leader.chat_id)
-        print(message)
+        if l == None:
+            message = "this accounts gonna to delete:\n".format(leader) + '\n'.join(i.name for i in l)
+            message_sender(message, leader.chat_id)
+            print(message)

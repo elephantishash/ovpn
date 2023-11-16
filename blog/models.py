@@ -8,7 +8,6 @@ STATUS = (
     (2,"Server news"),
     (3,"Final Destination"),
     (4,"Draft"),
-
 )
 
 class Post(models.Model):

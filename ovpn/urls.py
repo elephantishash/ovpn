@@ -23,6 +23,7 @@ import os
 
 urlpatterns = [
     path('', include('base.urls')),
+    path('messages/', include('drf_messages.urls')),
     path('blog/', include('blog.urls')),
     path('account/', include('account.urls')),
     path('admin/', admin.site.urls),
