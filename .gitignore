@@ -16,6 +16,9 @@ media/.DS_Store
 superadmin/__pycache__/**
 api/migrations/**
 api/__pycache__/**
+ovpn/__pycache__/
+base/__pycache__/
+account/__pycache__/
 __MACOSX
 Backup
 account/__pycache__
